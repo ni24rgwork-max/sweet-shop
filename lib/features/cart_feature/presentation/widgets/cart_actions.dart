@@ -1,59 +1,88 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_sweet_shop_app_ui/core/theme/dimens.dart';
-import 'package:flutter_sweet_shop_app_ui/core/theme/theme.dart';
-import 'package:flutter_sweet_shop_app_ui/core/utils/check_theme_status.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
+import '../../../../core/theme/theme.dart';
 import '../../data/models/cart_item_model.dart';
 import '../bloc/cart_cubit.dart';
 
+/// Quantity stepper.
+///
+/// One connected pill rather than two loose squares, so decrement, count and
+/// increment read as a single control.
 class CartActions extends StatelessWidget {
-  const CartActions({super.key, required this.item});
+  const CartActions({required this.item, super.key});
 
   final CartItemModel item;
 
   @override
   Widget build(BuildContext context) {
-    final appColors = context.theme.appColors;
-    final appTypography = context.theme.appTypography;
-    final cartCubit = context.read<CartCubit>();
+    final ColorScheme colors = context.colors;
+    final CartCubit cart = context.read<CartCubit>();
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      spacing: Dimens.largePadding,
-      children: [
-        Container(
-          width: 22,
-          height: 22,
-          decoration: BoxDecoration(
-            color: appColors.gray2,
-            borderRadius: BorderRadius.circular(4),
+    return Container(
+      decoration: BoxDecoration(
+        color: colors.surfaceContainerHigh,
+        borderRadius: AppShapes.radiusSm,
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          _StepperButton(
+            icon: item.quantity > 1
+                ? Symbols.remove_rounded
+                : Symbols.delete_rounded,
+            onTap: () => cart.decrementQuantity(item.product.id),
           ),
-          child: InkWell(
-            onTap: () => cartCubit.decrementQuantity(item.product.id),
-            borderRadius: BorderRadius.circular(4),
-            child: Icon(
-              Icons.remove,
-              size: 16,
-              color: checkDarkMode(context) ? appColors.black : appColors.white,
+          SizedBox(
+            width: 26,
+            child: Text(
+              '${item.quantity}',
+              textAlign: TextAlign.center,
+              style: AppTypography.price(14).copyWith(color: colors.onSurface),
             ),
           ),
-        ),
-        Text(item.quantity.toString(), style: appTypography.bodyLarge),
-        Container(
-          width: 22,
-          height: 22,
-          decoration: BoxDecoration(
-            color: appColors.primary,
-            borderRadius: BorderRadius.circular(4),
+          _StepperButton(
+            icon: Symbols.add_rounded,
+            onTap: () => cart.incrementQuantity(item.product.id),
+            emphasised: true,
           ),
-          child: InkWell(
-            onTap: () => cartCubit.incrementQuantity(item.product.id),
-            borderRadius: BorderRadius.circular(4),
-            child: Icon(Icons.add, size: 16, color: appColors.white),
+        ],
+      ),
+    );
+  }
+}
+
+class _StepperButton extends StatelessWidget {
+  const _StepperButton({
+    required this.icon,
+    required this.onTap,
+    this.emphasised = false,
+  });
+
+  final IconData icon;
+  final VoidCallback onTap;
+  final bool emphasised;
+
+  @override
+  Widget build(BuildContext context) {
+    final ColorScheme colors = context.colors;
+
+    return Material(
+      color: emphasised ? colors.primary : Colors.transparent,
+      borderRadius: AppShapes.radiusSm,
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: SizedBox.square(
+          dimension: 32,
+          child: Icon(
+            icon,
+            size: 17,
+            color: emphasised ? colors.onPrimary : colors.onSurfaceVariant,
           ),
         ),
-      ],
+      ),
     );
   }
 }

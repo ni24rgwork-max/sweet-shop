@@ -1,32 +1,42 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sweet_shop_app_ui/core/theme/theme.dart';
 
+import '../theme/theme.dart';
 import 'app_svg_viewer.dart';
 
+/// Circular outlined icon button — back arrows, bookmarks, overflow.
 class AppBorderedIconButton extends StatelessWidget {
   const AppBorderedIconButton({
-    super.key,
     required this.iconPath,
+    super.key,
     this.onPressed,
     this.color,
+    this.size = 48,
   });
 
   final String iconPath;
   final VoidCallback? onPressed;
   final Color? color;
+  final double size;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 56,
-      height: 56,
-      decoration: BoxDecoration(
-        border: Border.all(color: color ?? context.theme.appColors.gray2),
-        borderRadius: BorderRadius.circular(100),
-      ),
+    final ColorScheme colors = context.colors;
+
+    return SizedBox.square(
+      dimension: size,
       child: IconButton(
-        onPressed: onPressed ?? () {},
-        icon: AppSvgViewer(iconPath, width: 25, color: color),
+        onPressed: onPressed,
+        style: IconButton.styleFrom(
+          shape: AppShapes.pill,
+          side: BorderSide(color: colors.outlineVariant),
+          backgroundColor: colors.surface.withValues(alpha: 0.72),
+          padding: EdgeInsets.zero,
+        ),
+        icon: AppSvgViewer(
+          iconPath,
+          width: size * 0.42,
+          color: color ?? colors.onSurface,
+        ),
       ),
     );
   }

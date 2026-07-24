@@ -1,31 +1,61 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sweet_shop_app_ui/core/widgets/app_scaffold.dart';
-import 'package:flutter_sweet_shop_app_ui/core/widgets/general_app_bar.dart';
 
 import '../../../../core/theme/dimens.dart';
+import '../../../../core/theme/theme.dart';
+import '../../../../core/widgets/general_app_bar.dart';
 import '../../data/data_source/local/sample_data.dart';
 
+/// All current offers, one per card.
 class SpecialOffers extends StatelessWidget {
   const SpecialOffers({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return AppScaffold(
-      appBar: GeneralAppBar(title: 'Special offers'),
+    return Scaffold(
+      appBar: const GeneralAppBar(title: 'Special offers'),
       body: ListView.separated(
+        padding: const EdgeInsets.fromLTRB(
+          Dimens.gutter,
+          Dimens.padding,
+          Dimens.gutter,
+          Dimens.gutter,
+        ),
         itemCount: banners.length,
-        itemBuilder: (final context, final index) {
-          return InkWell(
-            onTap: () {},
-            borderRadius: BorderRadius.circular(Dimens.largePadding),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(Dimens.largePadding),
-              child: Image.asset(banners[index]),
+        separatorBuilder: (_, _) => const SizedBox(height: Dimens.largePadding),
+        itemBuilder: (BuildContext context, int index) {
+          return Card(
+            child: InkWell(
+              onTap: () {},
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  AspectRatio(
+                    aspectRatio: 2.2,
+                    child: Image.asset(banners[index], fit: BoxFit.cover),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(Dimens.mediumPadding),
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: Text(
+                            'Offer ${index + 1}',
+                            style: context.text.titleMedium,
+                          ),
+                        ),
+                        Text(
+                          'Ends in ${index + 2} days',
+                          style: context.text.bodySmall?.copyWith(
+                            color: context.colors.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
-        },
-        separatorBuilder: (final context, final index) {
-          return SizedBox(height: Dimens.largePadding);
         },
       ),
     );

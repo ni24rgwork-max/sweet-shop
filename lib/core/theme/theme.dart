@@ -1,191 +1,279 @@
+// CupertinoPageTransitionsBuilder lives in cupertino/route.dart, not material.
+import 'package:flutter/cupertino.dart' show CupertinoPageTransitionsBuilder;
 import 'package:flutter/material.dart';
-import 'package:flutter_sweet_shop_app_ui/core/theme/colors.dart';
-import 'package:flutter_sweet_shop_app_ui/core/theme/typography.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-class AppTheme {
-  //
-  // Light theme
-  //
-  static final light = ThemeData(
-    fontFamily: GoogleFonts.montserrat().fontFamily,
-  ).copyWith(
-    extensions: [appColors, AppTypography.typography],
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: appColors.primary,
-      brightness: Brightness.light,
-    ),
-    appBarTheme: AppBarTheme(
-      backgroundColor: appColors.white,
-      titleTextStyle: AppTypography.typography.bodyLarge.copyWith(
-        color: appColors.black,
-        fontSize: 17,
-      ),
-      surfaceTintColor: Colors.transparent,
-    ),
-    navigationBarTheme: NavigationBarThemeData(
-      backgroundColor: appColors.white,
-      labelTextStyle: WidgetStateProperty.resolveWith((
-        Set<WidgetState> states,
-      ) {
-        final Color color =
-            states.contains(WidgetState.selected)
-                ? appColors.primary
-                : appColors.black;
-        return TextStyle(
-          color: color,
-          fontWeight: FontWeight.w600,
-          fontSize: 12,
-        );
-      }),
-    ),
-    scaffoldBackgroundColor: appColors.white,
-  );
+import 'app_color_scheme.dart';
+import 'app_semantics.dart';
+import 'app_shapes.dart';
+import 'app_typography.dart';
+import 'dimens.dart';
 
-  static const appColors = AppColors(
-    // Primary
-    primary: Color(0xFFFB5650),
-    primaryShade1: Color(0xFFFEDDDC),
-    primaryShade2: Color(0xFFFECCCA),
-    primaryShade3: Color(0xFFFDBBB9),
-    primaryShade4: Color(0xFFFD9A96),
-    primaryShade5: Color(0xFFFC7873),
-    primaryTint1: Color(0xFFD04540),
-    primaryTint2: Color(0xFFA43430),
-    primaryTint3: Color(0xFF792421),
-    primaryTint4: Color(0xFF631B19),
-    primaryTint5: Color(0xFF4D1311),
+export 'app_color_scheme.dart';
+export 'app_motion.dart';
+export 'app_semantics.dart';
+export 'app_shapes.dart';
+export 'app_typography.dart';
 
-    // Secondary
-    secondary: Color(0xFFFC645F),
-    secondaryShade1: Color(0xFFFEE0DF),
-    secondaryShade2: Color(0xFFFEBDCF),
-    secondaryShade3: Color(0xFFFEC0BF),
-    secondaryShade4: Color(0xFFFDA29F),
-    secondaryShade5: Color(0xFFFD837F),
-    secondaryTint1: Color(0xFFD4514C),
-    secondaryTint2: Color(0xFFAB3D39),
-    secondaryTint3: Color(0xFF832A27),
-    secondaryTint4: Color(0xFF6F201D),
-    secondaryTint5: Color(0xFF5A1614),
+/// Assembles the two [ThemeData]s.
+///
+/// Component themes carry the shape and colour decisions so that individual
+/// screens can use plain Material widgets — `FilledButton`, `FilterChip`,
+/// `Card` — and inherit the design automatically, instead of each call site
+/// restating radii and colours.
+abstract final class AppTheme {
+  const AppTheme._();
 
-    // Neutral
-    white: Color(0xFFFFFFFF),
-    black: Color(0xFF000000),
-    gray: Color(0xFFEDEDED),
-    gray2: Color(0xFFB5B5B5),
-    gray4: Color(0xFF757575),
+  static ThemeData get light => _build(AppColorScheme.light, AppSemantics.light);
+  static ThemeData get dark => _build(AppColorScheme.dark, AppSemantics.dark);
 
-    // Graphic
-    brown: Color(0xFF82422B),
-    brownLight: Color(0xFF944F32),
-    brownExtraLight: Color(0xFFFFCC99),
+  static ThemeData _build(ColorScheme scheme, AppSemantics semantics) {
+    final TextTheme text = AppTypography.textTheme(
+      scheme.onSurface,
+      scheme.onSurfaceVariant,
+    );
 
-    // Status
-    error: Color(0xFFFC3D3D),
-    errorLight: Color(0xFFE00004),
-    errorExtraLight: Color(0xFFFFE1E0),
-    success: Color(0xFF4CAF50),
-    successLight: Color(0xFF8DC640),
-    warning: Color(0xFFFFCAAB),
-    warningLight: Color(0xFFFDF3D7),
-  );
+    return ThemeData(
+      colorScheme: scheme,
+      textTheme: text,
+      extensions: <ThemeExtension<dynamic>>[semantics],
+      scaffoldBackgroundColor: scheme.surface,
+      splashFactory: InkSparkle.splashFactory,
+      visualDensity: VisualDensity.standard,
 
-  //
-  // Dark theme
-  //
-  static final dark = ThemeData.dark().copyWith(
-    extensions: [appColors, AppTypography.typography],
-    textTheme: TextTheme(
-      bodyLarge: AppTypography.typography.bodyLarge.copyWith(
-        color: Colors.white,
+      appBarTheme: AppBarTheme(
+        backgroundColor: scheme.surface,
+        foregroundColor: scheme.onSurface,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        centerTitle: false,
+        titleTextStyle: text.headlineSmall,
       ),
-      bodyMedium: AppTypography.typography.bodyMedium.copyWith(
-        color: Colors.white,
+
+      navigationBarTheme: NavigationBarThemeData(
+        backgroundColor: scheme.surfaceContainerLow,
+        indicatorColor: scheme.secondaryContainer,
+        indicatorShape: AppShapes.pill,
+        elevation: 0,
+        height: 76,
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+        labelTextStyle: WidgetStateProperty.resolveWith((states) {
+          final bool selected = states.contains(WidgetState.selected);
+          return text.labelMedium!.copyWith(
+            color: selected ? scheme.onSecondaryContainer : scheme.onSurfaceVariant,
+            fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+          );
+        }),
+        iconTheme: WidgetStateProperty.resolveWith((states) {
+          final bool selected = states.contains(WidgetState.selected);
+          return IconThemeData(
+            size: 24,
+            color: selected ? scheme.onSecondaryContainer : scheme.onSurfaceVariant,
+          );
+        }),
       ),
-      bodySmall: AppTypography.typography.bodySmall.copyWith(
-        color: Colors.white,
+
+      cardTheme: CardThemeData(
+        color: scheme.surfaceContainerLow,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        margin: EdgeInsets.zero,
+        shape: AppShapes.card,
+        clipBehavior: Clip.antiAlias,
       ),
-      displayLarge: AppTypography.typography.displayLarge.copyWith(
-        color: Colors.white,
+
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          shape: AppShapes.pill,
+          minimumSize: const Size.fromHeight(56),
+          padding: const EdgeInsets.symmetric(horizontal: Dimens.largePadding),
+          textStyle: text.labelLarge,
+          elevation: 0,
+        ),
       ),
-      displayMedium: AppTypography.typography.displayMedium.copyWith(
-        color: Colors.white,
+
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          shape: AppShapes.pill,
+          minimumSize: const Size.fromHeight(56),
+          padding: const EdgeInsets.symmetric(horizontal: Dimens.largePadding),
+          textStyle: text.labelLarge,
+          side: BorderSide(color: scheme.outlineVariant),
+        ),
       ),
-      displaySmall: AppTypography.typography.displaySmall.copyWith(
-        color: Colors.white,
+
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          shape: AppShapes.pill,
+          textStyle: text.labelLarge,
+          foregroundColor: scheme.primary,
+        ),
       ),
-      labelLarge: AppTypography.typography.labelLarge.copyWith(
-        color: Colors.white,
+
+      iconButtonTheme: IconButtonThemeData(
+        style: IconButton.styleFrom(
+          shape: AppShapes.pill,
+          minimumSize: const Size.square(48),
+        ),
       ),
-      labelMedium: AppTypography.typography.labelMedium.copyWith(
-        color: Colors.white,
+
+      chipTheme: ChipThemeData(
+        backgroundColor: scheme.surfaceContainer,
+        selectedColor: scheme.secondaryContainer,
+        checkmarkColor: scheme.onSecondaryContainer,
+        side: BorderSide.none,
+        shape: AppShapes.chip,
+        labelStyle: text.labelLarge,
+        padding: const EdgeInsets.symmetric(
+          horizontal: Dimens.mediumPadding,
+          vertical: Dimens.padding,
+        ),
+        showCheckmark: false,
       ),
-      labelSmall: AppTypography.typography.labelSmall.copyWith(
-        color: Colors.white,
+
+      searchBarTheme: SearchBarThemeData(
+        backgroundColor: WidgetStatePropertyAll(scheme.surfaceContainer),
+        surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
+        overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+        elevation: const WidgetStatePropertyAll(0),
+        shape: const WidgetStatePropertyAll(AppShapes.pill),
+        hintStyle: WidgetStatePropertyAll(
+          text.bodyLarge!.copyWith(color: scheme.onSurfaceVariant),
+        ),
+        textStyle: WidgetStatePropertyAll(text.bodyLarge),
+        padding: const WidgetStatePropertyAll(
+          EdgeInsets.symmetric(horizontal: Dimens.largePadding),
+        ),
       ),
-      headlineLarge: AppTypography.typography.headlineLarge.copyWith(
-        color: Colors.white,
+
+      searchViewTheme: SearchViewThemeData(
+        backgroundColor: scheme.surface,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        dividerColor: scheme.outlineVariant,
+        headerHintStyle: text.bodyLarge!.copyWith(
+          color: scheme.onSurfaceVariant,
+        ),
+        headerTextStyle: text.bodyLarge,
+        shape: const RoundedRectangleBorder(borderRadius: AppShapes.radiusXl),
       ),
-      headlineMedium: AppTypography.typography.headlineMedium.copyWith(
-        color: Colors.white,
+
+      bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: scheme.surfaceContainerLow,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        modalElevation: 0,
+        showDragHandle: true,
+        dragHandleColor: scheme.outlineVariant,
+        shape: const RoundedRectangleBorder(borderRadius: AppShapes.sheetTop),
       ),
-      headlineSmall: AppTypography.typography.headlineSmall.copyWith(
-        color: Colors.white,
+
+      dialogTheme: DialogThemeData(
+        backgroundColor: scheme.surfaceContainerLow,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        shape: const RoundedRectangleBorder(borderRadius: AppShapes.radiusXxl),
+        titleTextStyle: text.headlineSmall,
+        contentTextStyle: text.bodyMedium,
       ),
-      titleLarge: AppTypography.typography.titleLarge.copyWith(
-        color: Colors.white,
+
+      segmentedButtonTheme: SegmentedButtonThemeData(
+        style: SegmentedButton.styleFrom(
+          shape: AppShapes.pill,
+          selectedBackgroundColor: scheme.secondaryContainer,
+          selectedForegroundColor: scheme.onSecondaryContainer,
+          textStyle: text.labelLarge,
+        ),
       ),
-      titleMedium: AppTypography.typography.titleMedium.copyWith(
-        color: Colors.white,
+
+      // Individual properties rather than the `year2023: false` shorthand,
+      // which is deprecated as of v3.27 and would reintroduce an analyzer
+      // warning.
+      sliderTheme: SliderThemeData(
+        activeTrackColor: scheme.primary,
+        inactiveTrackColor: scheme.surfaceContainerHighest,
+        thumbColor: scheme.primary,
+        overlayColor: scheme.primary.withValues(alpha: 0.12),
+        trackHeight: 12,
+        trackGap: 6,
       ),
-      titleSmall: AppTypography.typography.titleSmall.copyWith(
-        color: Colors.white,
+
+      switchTheme: SwitchThemeData(
+        thumbColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected)
+              ? scheme.onPrimary
+              : scheme.outline,
+        ),
+        trackColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected)
+              ? scheme.primary
+              : scheme.surfaceContainerHighest,
+        ),
       ),
-    ),
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: appColors.primary,
-      brightness: Brightness.dark,
-    ),
-    appBarTheme: AppBarTheme(
-      backgroundColor: appColors.black,
-      titleTextStyle: AppTypography.typography.bodyLarge.copyWith(
-        color: appColors.white,
-        fontSize: 17,
+
+      radioTheme: RadioThemeData(
+        fillColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.selected)
+              ? scheme.primary
+              : scheme.outline,
+        ),
       ),
-      surfaceTintColor: Colors.transparent,
-    ),
-    navigationBarTheme: NavigationBarThemeData(
-      backgroundColor: appColors.black,
-      labelTextStyle: WidgetStateProperty.resolveWith((
-        Set<WidgetState> states,
-      ) {
-        final Color color =
-            states.contains(WidgetState.selected)
-                ? appColors.primary
-                : appColors.white;
-        return TextStyle(
-          color: color,
-          fontWeight: FontWeight.w600,
-          fontSize: 12,
-        );
-      }),
-    ),
-    scaffoldBackgroundColor: appColors.black,
-  );
+
+      dividerTheme: DividerThemeData(
+        color: scheme.outlineVariant,
+        thickness: 1,
+        space: Dimens.largePadding,
+      ),
+
+      listTileTheme: ListTileThemeData(
+        shape: const RoundedRectangleBorder(borderRadius: AppShapes.radiusMd),
+        titleTextStyle: text.titleMedium,
+        subtitleTextStyle: text.bodySmall!.copyWith(
+          color: scheme.onSurfaceVariant,
+        ),
+        iconColor: scheme.onSurfaceVariant,
+      ),
+
+      tabBarTheme: TabBarThemeData(
+        labelStyle: text.titleSmall,
+        unselectedLabelStyle: text.titleSmall,
+        labelColor: scheme.primary,
+        unselectedLabelColor: scheme.onSurfaceVariant,
+        indicatorSize: TabBarIndicatorSize.label,
+        dividerColor: Colors.transparent,
+        indicator: UnderlineTabIndicator(
+          borderSide: BorderSide(color: scheme.primary, width: 3),
+          borderRadius: AppShapes.radiusXs,
+          insets: const EdgeInsets.symmetric(horizontal: Dimens.padding),
+        ),
+      ),
+
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: scheme.inverseSurface,
+        contentTextStyle: text.bodyMedium!.copyWith(
+          color: scheme.onInverseSurface,
+        ),
+        behavior: SnackBarBehavior.floating,
+        shape: const RoundedRectangleBorder(borderRadius: AppShapes.radiusMd),
+        elevation: 0,
+      ),
+
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: <TargetPlatform, PageTransitionsBuilder>{
+          TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.android: FadeForwardsPageTransitionsBuilder(),
+        },
+      ),
+    );
+  }
 }
 
-extension ColorThemeExtension on ThemeData {
-  /// Usage example: Theme.of(context).appColors;
-  AppColors get appColors => extension<AppColors>()!;
-}
-
-extension FontThemeExtension on ThemeData {
-  /// Usage example: Theme.of(context).appTypography;
-  AppTypography get appTypography => extension<AppTypography>()!;
-}
-
+/// `Theme.of(context)` shorthand.
 extension ThemeGetter on BuildContext {
-  // Usage example: `context.theme`
   ThemeData get theme => Theme.of(this);
+  ColorScheme get colors => Theme.of(this).colorScheme;
+  TextTheme get text => Theme.of(this).textTheme;
+
+  /// Roles Material 3 has no slot for — see [AppSemantics].
+  AppSemantics get semantics => Theme.of(this).extension<AppSemantics>()!;
 }

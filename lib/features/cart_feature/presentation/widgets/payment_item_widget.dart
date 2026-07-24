@@ -1,60 +1,98 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sweet_shop_app_ui/core/theme/dimens.dart';
-import 'package:flutter_sweet_shop_app_ui/core/theme/theme.dart';
-import 'package:flutter_sweet_shop_app_ui/core/widgets/bordered_container.dart';
 
+import '../../../../core/theme/dimens.dart';
+import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/app_svg_viewer.dart';
 
+/// A selectable payment method.
+///
+/// The radio takes its group state from a [RadioGroup] ancestor. `Radio.groupValue`
+/// and `Radio.onChanged` were deprecated after Flutter 3.32 and using them was
+/// what produced two of the four analyzer warnings this rewrite clears.
 class PaymentItemWidget extends StatelessWidget {
   const PaymentItemWidget({
-    super.key,
-    this.onTap,
     required this.title,
+    super.key,
+    this.value,
+    this.onTap,
     this.iconPath,
     this.logoPath,
-    this.isActive = false,
     this.showBorder = true,
     this.showRadio = true,
+    this.selected = false,
   });
 
-  final GestureTapCallback? onTap;
-
   final String title;
+
+  /// Identity within the enclosing [RadioGroup]. Required when [showRadio].
+  final String? value;
+
+  final VoidCallback? onTap;
   final String? iconPath;
   final String? logoPath;
-  final bool isActive;
   final bool showBorder;
   final bool showRadio;
+  final bool selected;
 
   @override
   Widget build(BuildContext context) {
-    final appColors = context.theme.appColors;
-    final appTypography = context.theme.appTypography;
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(Dimens.corners),
-      child: BorderedContainer(
-        borderColor: showBorder ? null : Colors.transparent,
-        child: ListTile(
-          contentPadding: EdgeInsets.only(
-            left: showBorder ? Dimens.largePadding : Dimens.padding,
+    final ColorScheme colors = context.colors;
+
+    return Material(
+      color: selected ? colors.secondaryContainer : colors.surfaceContainerLow,
+      shape: RoundedRectangleBorder(
+        borderRadius: AppShapes.radiusMd,
+        side: showBorder
+            ? BorderSide(
+                color: selected ? colors.primary : colors.outlineVariant,
+                width: selected ? 1.5 : 1,
+              )
+            : BorderSide.none,
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: Dimens.mediumPadding,
+            vertical: Dimens.smallPadding,
           ),
-          leading:
-              iconPath != null
-                  ? AppSvgViewer(iconPath!, color: appColors.primary)
-                  : logoPath != null
-                  ? AppSvgViewer(logoPath!, width: 26, height: 26)
-                  : null,
-          title: Text(title, style: appTypography.bodyMedium),
-          trailing:
-              showRadio
-                  ? Radio(
-                    value: isActive,
-                    groupValue: true,
-                    onChanged: (final value) {},
-                    activeColor: appColors.primary,
-                  )
-                  : null,
+          child: Row(
+            children: <Widget>[
+              if (iconPath != null || logoPath != null) ...<Widget>[
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: colors.surfaceContainerHigh,
+                    borderRadius: AppShapes.radiusSm,
+                  ),
+                  child: Center(
+                    child: AppSvgViewer(
+                      (iconPath ?? logoPath)!,
+                      width: 20,
+                      color: iconPath != null ? colors.onSurface : null,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: Dimens.mediumPadding),
+              ],
+              Expanded(
+                child: Text(
+                  title,
+                  style: context.text.titleSmall?.copyWith(
+                    color: selected
+                        ? colors.onSecondaryContainer
+                        : colors.onSurface,
+                  ),
+                ),
+              ),
+              if (showRadio && value != null)
+                Radio<String>(value: value!)
+              else
+                Icon(Icons.chevron_right, color: colors.onSurfaceVariant),
+            ],
+          ),
         ),
       ),
     );

@@ -1,47 +1,59 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sweet_shop_app_ui/core/theme/theme.dart';
-import 'package:flutter_sweet_shop_app_ui/core/widgets/app_text_button.dart';
 
 import '../gen/assets.gen.dart';
 import '../theme/dimens.dart';
+import '../theme/theme.dart';
+import 'app_text_button.dart';
 
+/// Section header — a Fraunces headline plus an optional "See all".
+///
+/// The serif at headline size is what separates sections visually, so the
+/// previous bold-body treatment is replaced by the display family.
 class AppTitleWidget extends StatelessWidget {
   const AppTitleWidget({
-    super.key,
     required this.title,
+    super.key,
     this.thumbnailPath,
-    required this.onPressed,
+    this.onPressed,
   });
 
   final String title;
   final String? thumbnailPath;
-  final GestureTapCallback onPressed;
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Dimens.largePadding),
+      padding: const EdgeInsets.only(
+        left: Dimens.gutter,
+        right: Dimens.padding,
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            spacing: Dimens.largePadding,
-            children: [
-              if (thumbnailPath != null)
-                Image.asset(thumbnailPath!, width: 34, height: 34),
-              Text(
-                title,
-                style: context.theme.appTypography.titleSmall.copyWith(
-                  fontWeight: FontWeight.bold,
+        children: <Widget>[
+          Expanded(
+            child: Row(
+              spacing: Dimens.mediumPadding,
+              children: <Widget>[
+                if (thumbnailPath != null)
+                  Image.asset(thumbnailPath!, width: 30, height: 30),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: context.text.headlineSmall,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-          AppTextButton(
-            onPressed: onPressed,
-            title: 'See all',
-            iconPath: Assets.icons.arrowRight1,
-          ),
+          if (onPressed != null)
+            AppTextButton(
+              onPressed: onPressed,
+              title: 'See all',
+              iconPath: Assets.icons.arrowRight1,
+            ),
         ],
       ),
     );

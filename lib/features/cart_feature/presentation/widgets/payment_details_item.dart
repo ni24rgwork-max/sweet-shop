@@ -1,28 +1,48 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sweet_shop_app_ui/core/theme/theme.dart';
 
 import '../../../../core/theme/dimens.dart';
+import '../../../../core/theme/theme.dart';
 
+/// One label/amount line in the payment breakdown.
 class PaymentDetailsItem extends StatelessWidget {
   const PaymentDetailsItem({
-    super.key,
     required this.title,
     required this.subtitle,
+    super.key,
+    this.emphasised = false,
   });
 
   final String title;
   final String subtitle;
 
+  /// Used for the total line — heavier weight, full-contrast colour.
+  final bool emphasised;
+
   @override
   Widget build(BuildContext context) {
-    final appColors = context.theme.appColors;
+    final ColorScheme colors = context.colors;
+
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: Dimens.largePadding),
+      padding: const EdgeInsets.symmetric(vertical: Dimens.padding),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(title, style: TextStyle(color: appColors.gray4)),
-          Text(subtitle),
+        children: <Widget>[
+          Expanded(
+            child: Text(
+              title,
+              style: emphasised
+                  ? context.text.titleMedium
+                  : context.text.bodyMedium?.copyWith(
+                      color: colors.onSurfaceVariant,
+                    ),
+            ),
+          ),
+          Text(
+            subtitle,
+            style: AppTypography.price(
+              emphasised ? 18 : 14,
+              weight: emphasised ? FontWeight.w800 : FontWeight.w600,
+            ).copyWith(color: colors.onSurface),
+          ),
         ],
       ),
     );

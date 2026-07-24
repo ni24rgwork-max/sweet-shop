@@ -1,90 +1,112 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sweet_shop_app_ui/core/theme/dimens.dart';
-import 'package:flutter_sweet_shop_app_ui/core/theme/theme.dart';
-import 'package:flutter_sweet_shop_app_ui/core/utils/check_theme_status.dart';
-import 'package:flutter_sweet_shop_app_ui/core/widgets/app_divider.dart';
-import 'package:flutter_sweet_shop_app_ui/core/widgets/app_scaffold.dart';
-import 'package:flutter_sweet_shop_app_ui/core/widgets/general_app_bar.dart';
-import 'package:flutter_sweet_shop_app_ui/features/cart_feature/presentation/widgets/payment_item_widget.dart';
 
 import '../../../../core/gen/assets.gen.dart';
-import '../../../../core/widgets/app_button.dart';
+import '../../../../core/theme/dimens.dart';
+import '../../../../core/theme/theme.dart';
+import '../../../../core/widgets/general_app_bar.dart';
+import '../widgets/payment_item_widget.dart';
 
-class PaymentMethodsScreen extends StatelessWidget {
+/// Payment method picker.
+///
+/// A single [RadioGroup] owns the selection for every method on the screen, which
+/// is both the non-deprecated API and the reason selection now actually moves
+/// when you tap — previously every radio was hardcoded against `groupValue: true`.
+class PaymentMethodsScreen extends StatefulWidget {
   const PaymentMethodsScreen({super.key});
 
   @override
+  State<PaymentMethodsScreen> createState() => _PaymentMethodsScreenState();
+}
+
+class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
+  String _method = 'cash';
+
+  @override
   Widget build(BuildContext context) {
-    final appTypography = context.theme.appTypography;
-    return AppScaffold(
-      appBar: GeneralAppBar(title: 'Payment methods'),
-      body: SingleChildScrollView(
-        child: Column(
-          spacing: Dimens.largePadding,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+    return Scaffold(
+      appBar: const GeneralAppBar(title: 'Payment methods'),
+      body: RadioGroup<String>(
+        groupValue: _method,
+        onChanged: (String? value) {
+          if (value != null) setState(() => _method = value);
+        },
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(
+            Dimens.gutter,
+            Dimens.padding,
+            Dimens.gutter,
+            Dimens.gutter,
+          ),
+          children: <Widget>[
             PaymentItemWidget(
-              onTap: () {},
               title: 'Cash',
+              value: 'cash',
               iconPath: Assets.icons.money3,
+              selected: _method == 'cash',
+              onTap: () => setState(() => _method = 'cash'),
             ),
+            const SizedBox(height: Dimens.mediumPadding),
             PaymentItemWidget(
-              onTap: () {},
               title: 'Wallet',
+              value: 'wallet',
               iconPath: Assets.icons.wallet,
+              selected: _method == 'wallet',
+              onTap: () => setState(() => _method = 'wallet'),
             ),
-            SizedBox.shrink(),
-            Text('Add a credit card', style: appTypography.bodyLarge),
+
+            const SizedBox(height: Dimens.largePadding),
+            Text('Add a credit card', style: context.text.titleMedium),
+            const SizedBox(height: Dimens.mediumPadding),
             PaymentItemWidget(
-              onTap: () {},
               title: 'Add card',
               iconPath: Assets.icons.card,
               showRadio: false,
+              onTap: () {},
             ),
-            SizedBox.shrink(),
-            Text('More payment options', style: appTypography.bodyLarge),
-            Column(
-              children: [
-                PaymentItemWidget(
-                  onTap: () {},
-                  title: 'PayPal',
-                  logoPath:
-                      checkDarkMode(context) ? null : Assets.icons.paypalLogo,
-                  showBorder: false,
-                ),
-                AppDivider(),
-                PaymentItemWidget(
-                  onTap: () {},
-                  title: 'Apple Pay',
-                  logoPath:
-                      checkDarkMode(context) ? null : Assets.icons.appleLogo,
-                  showBorder: false,
-                ),
-                AppDivider(),
-                PaymentItemWidget(
-                  onTap: () {},
-                  title: 'Google Pay',
-                  logoPath:
-                      checkDarkMode(context) ? null : Assets.icons.googleLogo,
-                  showBorder: false,
-                ),
-              ],
+
+            const SizedBox(height: Dimens.largePadding),
+            Text('More payment options', style: context.text.titleMedium),
+            const SizedBox(height: Dimens.mediumPadding),
+            PaymentItemWidget(
+              title: 'PayPal',
+              value: 'paypal',
+              logoPath: Assets.icons.paypalLogo,
+              selected: _method == 'paypal',
+              onTap: () => setState(() => _method = 'paypal'),
+            ),
+            const SizedBox(height: Dimens.mediumPadding),
+            PaymentItemWidget(
+              title: 'Apple Pay',
+              value: 'apple',
+              logoPath: Assets.icons.appleLogo,
+              selected: _method == 'apple',
+              onTap: () => setState(() => _method = 'apple'),
+            ),
+            const SizedBox(height: Dimens.mediumPadding),
+            PaymentItemWidget(
+              title: 'Google Pay',
+              value: 'google',
+              logoPath: Assets.icons.googleLogo,
+              selected: _method == 'google',
+              onTap: () => setState(() => _method = 'google'),
             ),
           ],
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.only(
-          left: Dimens.largePadding,
-          right: Dimens.largePadding,
-          bottom: Dimens.padding,
+      bottomNavigationBar: SafeArea(
+        minimum: const EdgeInsets.fromLTRB(
+          Dimens.gutter,
+          Dimens.padding,
+          Dimens.gutter,
+          Dimens.mediumPadding,
         ),
-        child: AppButton(
-          onPressed: () {},
-          title: 'Payment confirmation',
-          textStyle: appTypography.bodyLarge,
-          borderRadius: Dimens.corners,
-          margin: EdgeInsets.symmetric(vertical: Dimens.largePadding),
+        child: FilledButton(
+          onPressed: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Order confirmed')),
+            );
+          },
+          child: const Text('Confirm payment'),
         ),
       ),
     );

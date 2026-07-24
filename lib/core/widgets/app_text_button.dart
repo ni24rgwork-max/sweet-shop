@@ -1,51 +1,52 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sweet_shop_app_ui/core/theme/theme.dart';
 
 import '../theme/dimens.dart';
+import '../theme/theme.dart';
 import 'app_svg_viewer.dart';
 
+/// Low-emphasis action — "See all", inline links.
 class AppTextButton extends StatelessWidget {
   const AppTextButton({
+    required this.onPressed,
     super.key,
     this.title,
     this.child,
-    required this.onPressed,
-    this.textStyle,
-    this.margin,
     this.color,
     this.iconPath,
   });
 
   final String? title;
   final Widget? child;
-  final TextStyle? textStyle;
-  final GestureTapCallback? onPressed;
-  final EdgeInsets? margin;
+  final VoidCallback? onPressed;
   final Color? color;
   final String? iconPath;
 
   @override
-  Widget build(final BuildContext context) {
-    final primaryColor = context.theme.appColors.primary;
-    return Container(
-      height: 40.0,
-      margin: margin ?? const EdgeInsets.symmetric(vertical: Dimens.padding),
-      child: TextButton(
-        onPressed: onPressed,
-        child:
-        child ??
-            Row(
-              spacing: Dimens.smallPadding,
-              children: [
-                Text(
-                  title ?? '',
-                  style: textStyle ?? TextStyle(color: color ?? primaryColor),
-                ),
-                if (iconPath != null)
-                  AppSvgViewer(iconPath!, color: primaryColor, width: 16),
-              ],
-            ),
+  Widget build(BuildContext context) {
+    final Color foreground = color ?? context.colors.primary;
+
+    return TextButton(
+      onPressed: onPressed,
+      style: TextButton.styleFrom(
+        foregroundColor: foreground,
+        padding: const EdgeInsets.symmetric(
+          horizontal: Dimens.mediumPadding,
+          vertical: Dimens.padding,
+        ),
+        minimumSize: Size.zero,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
+      child:
+          child ??
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            spacing: Dimens.smallPadding,
+            children: <Widget>[
+              Text(title ?? ''),
+              if (iconPath != null)
+                AppSvgViewer(iconPath!, color: foreground, width: 15),
+            ],
+          ),
     );
   }
 }

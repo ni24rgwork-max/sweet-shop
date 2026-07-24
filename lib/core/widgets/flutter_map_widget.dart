@@ -1,35 +1,60 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_sweet_shop_app_ui/core/theme/theme.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
+import '../theme/theme.dart';
+
+/// OpenStreetMap tile view with a single branded pin.
+///
+/// The marker is a filled teardrop on `primary` with a light ring, so it stays
+/// readable against arbitrary map tiles rather than blending into them.
 class FlutterMapWidget extends StatelessWidget {
-  const FlutterMapWidget({super.key, required this.latLng, this.mapController});
+  const FlutterMapWidget({
+    required this.latLng,
+    super.key,
+    this.mapController,
+    this.zoom = 17,
+  });
 
   final LatLng latLng;
   final MapController? mapController;
+  final double zoom;
 
   @override
   Widget build(BuildContext context) {
+    final ColorScheme colors = context.colors;
+
     return FlutterMap(
       mapController: mapController,
-      options: MapOptions(initialCenter: latLng, initialZoom: 17),
-      children: [
+      options: MapOptions(
+        initialCenter: latLng,
+        initialZoom: zoom,
+        backgroundColor: colors.surfaceContainer,
+      ),
+      children: <Widget>[
         TileLayer(
           urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-          subdomains: ['a', 'b', 'c'],
           userAgentPackageName: 'com.sweet.shop.flutter_sweet_shop_app_ui',
         ),
         MarkerLayer(
-          markers: [
+          markers: <Marker>[
             Marker(
               point: latLng,
-              width: 40,
-              height: 40,
-              child: Icon(
-                Icons.location_pin,
-                color: context.theme.appColors.primary,
-                size: 40,
+              width: 44,
+              height: 44,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: colors.primary,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: colors.onPrimary, width: 3),
+                ),
+                child: Icon(
+                  Symbols.storefront_rounded,
+                  color: colors.onPrimary,
+                  size: 22,
+                  fill: 1,
+                ),
               ),
             ),
           ],

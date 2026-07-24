@@ -1,22 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sweet_shop_app_ui/core/theme/dimens.dart';
-import 'package:flutter_sweet_shop_app_ui/core/theme/theme.dart';
 
+import '../theme/dimens.dart';
+import '../theme/theme.dart';
+
+/// Raised surface.
+///
+/// M3 expresses elevation with tonal colour rather than drop shadows, so this
+/// sits on `surfaceContainer` instead of casting the previous 10px black blur.
 class ShadedContainer extends StatelessWidget {
-  final Widget child;
-  final Color? borderColor;
-  final EdgeInsetsGeometry? padding;
-  final EdgeInsetsGeometry? margin;
-  final double? width;
-  final double? height;
-  final AlignmentGeometry? alignment;
-  final BoxConstraints? constraints;
-  final double? borderRadius;
-
   const ShadedContainer({
-    super.key,
     required this.child,
-    this.borderColor,
+    super.key,
     this.padding,
     this.margin,
     this.width,
@@ -24,12 +18,22 @@ class ShadedContainer extends StatelessWidget {
     this.alignment,
     this.constraints,
     this.borderRadius,
+    this.color,
   });
+
+  final Widget child;
+  final EdgeInsetsGeometry? padding;
+  final EdgeInsetsGeometry? margin;
+  final double? width;
+  final double? height;
+  final AlignmentGeometry? alignment;
+  final BoxConstraints? constraints;
+  final double? borderRadius;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      key: key,
       width: width,
       height: height,
       padding: padding,
@@ -37,17 +41,8 @@ class ShadedContainer extends StatelessWidget {
       alignment: alignment,
       constraints: constraints,
       decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: BorderRadius.circular(
-          borderRadius ?? Dimens.largePadding,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: context.theme.appColors.black.withValues(alpha: 0.1),
-            blurRadius: 10,
-            offset: Offset(0, 1),
-          ),
-        ],
+        color: color ?? context.colors.surfaceContainer,
+        borderRadius: BorderRadius.circular(borderRadius ?? Dimens.corners),
       ),
       child: child,
     );

@@ -2,40 +2,75 @@ import 'package:flutter/material.dart';
 
 import '../gen/assets.gen.dart';
 import '../theme/dimens.dart';
+import '../theme/theme.dart';
 import 'app_svg_viewer.dart';
 
+/// Settings-style row, used down the profile tab.
+///
+/// The leading icon sits in a tonal rounded square so the list reads as a set of
+/// items rather than a column of loose glyphs.
 class AppListTile extends StatelessWidget {
   const AppListTile({
-    super.key,
     required this.onTap,
     required this.title,
     required this.leadingIconPath,
+    super.key,
     this.trailing,
     this.padding,
+    this.destructive = false,
   });
 
-  final GestureTapCallback onTap;
+  final VoidCallback onTap;
   final String title;
   final String leadingIconPath;
   final Widget? trailing;
   final EdgeInsetsGeometry? padding;
 
+  /// Renders in the error role — sign out, delete account.
+  final bool destructive;
+
   @override
   Widget build(BuildContext context) {
+    final ColorScheme colors = context.colors;
+    final Color foreground = destructive ? colors.error : colors.onSurface;
+
     return Padding(
-      padding: padding ?? EdgeInsets.symmetric(horizontal: Dimens.largePadding),
-      child: Ink(
-        height: 51,
-        child: ListTile(
-          onTap: onTap,
-          title: Text(title, style: TextStyle(fontSize: 15)),
-          leading: AppSvgViewer(leadingIconPath, width: 19),
-          trailing:
-              trailing ?? AppSvgViewer(Assets.icons.arrowRight4, width: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(Dimens.corners),
+      padding:
+          padding ?? const EdgeInsets.symmetric(horizontal: Dimens.gutter),
+      child: ListTile(
+        onTap: onTap,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: Dimens.padding,
+          vertical: Dimens.smallPadding,
+        ),
+        title: Text(
+          title,
+          style: context.text.titleMedium?.copyWith(color: foreground),
+        ),
+        leading: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: destructive
+                ? colors.errorContainer
+                : colors.surfaceContainerHigh,
+            borderRadius: AppShapes.radiusSm,
+          ),
+          child: Center(
+            child: AppSvgViewer(
+              leadingIconPath,
+              width: 19,
+              color: destructive ? colors.onErrorContainer : foreground,
+            ),
           ),
         ),
+        trailing:
+            trailing ??
+            AppSvgViewer(
+              Assets.icons.arrowRight4,
+              width: 15,
+              color: colors.onSurfaceVariant,
+            ),
       ),
     );
   }

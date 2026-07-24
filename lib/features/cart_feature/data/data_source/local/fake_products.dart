@@ -69,7 +69,9 @@ class FakeProducts {
       weight: 1.5,
     ),
     ProductModel(
-      id: 7,
+      // Was a duplicate of 'Chocolate donut' above. CartCubit keys line items on
+      // product id, so the two could never coexist in the cart.
+      id: 8,
       name: 'Mix donut',
       price: 29.99,
       imageUrl: Assets.images.donutCategory3.path,

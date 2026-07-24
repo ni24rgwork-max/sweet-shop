@@ -1,78 +1,125 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sweet_shop_app_ui/core/theme/dimens.dart';
-import 'package:flutter_sweet_shop_app_ui/core/theme/theme.dart';
-import 'package:flutter_sweet_shop_app_ui/core/utils/sized_context.dart';
-import 'package:flutter_sweet_shop_app_ui/core/widgets/app_icon_buttons.dart';
-import 'package:flutter_sweet_shop_app_ui/core/widgets/app_search_bar.dart';
 
 import '../../../../core/gen/assets.gen.dart';
+import '../../../../core/theme/dimens.dart';
+import '../../../../core/theme/theme.dart';
+import '../../../../core/widgets/app_svg_viewer.dart';
 
-class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const HomeAppBar({super.key});
+/// Top of the home tab.
+///
+/// A collapsing sliver rather than a fixed [AppBar]: the greeting is set in
+/// Fraunces at display size and scrolls away, which is what gives the screen its
+/// editorial opening. The previous version painted a saturated primary block
+/// across the whole top of the screen — the tonal surface here lets the food
+/// photography below be the only saturated thing on screen.
+class HomeHeader extends StatelessWidget {
+  const HomeHeader({super.key});
+
+  static String _greeting() {
+    final int hour = DateTime.now().hour;
+    if (hour < 12) return 'Good morning';
+    if (hour < 17) return 'Good afternoon';
+    return 'Good evening';
+  }
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.appColors;
-    final typography = context.theme.appTypography;
-    return Column(
-      children: [
-        AppBar(
-          backgroundColor: colors.primary,
-          actions: [AppIconButton(iconPath: Assets.icons.notification)],
-          title: Row(
-            spacing: Dimens.padding,
-            children: [
-              AppIconButton(iconPath: Assets.icons.location),
-              Column(
-                spacing: Dimens.padding,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Location',
-                    style: typography.titleSmall.copyWith(
-                      color: colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    'New York, AUS',
-                    style: typography.titleSmall.copyWith(color: colors.white),
-                  ),
-                ],
-              ),
-            ],
+    final ColorScheme colors = context.colors;
+
+    return SliverAppBar(
+      pinned: false,
+      floating: false,
+      expandedHeight: 156,
+      collapsedHeight: 72,
+      backgroundColor: colors.surface,
+      surfaceTintColor: Colors.transparent,
+      automaticallyImplyLeading: false,
+      titleSpacing: Dimens.gutter,
+      title: Row(
+        children: <Widget>[
+          AppSvgViewer(
+            Assets.icons.location,
+            width: 16,
+            color: colors.primary,
           ),
-          leadingWidth: 85,
-          titleSpacing: Dimens.padding,
-          actionsPadding: EdgeInsets.symmetric(horizontal: Dimens.largePadding),
+          const SizedBox(width: Dimens.smallPadding),
+          Text(
+            'New York',
+            style: context.text.labelLarge?.copyWith(
+              color: colors.onSurfaceVariant,
+            ),
+          ),
+          const Spacer(),
+          _NotificationButton(),
+          const SizedBox(width: Dimens.padding),
+        ],
+      ),
+      flexibleSpace: FlexibleSpaceBar(
+        expandedTitleScale: 1,
+        titlePadding: const EdgeInsets.fromLTRB(
+          Dimens.gutter,
+          0,
+          Dimens.gutter,
+          Dimens.mediumPadding,
         ),
-        Stack(
-          children: [
-            Container(
-              height: 50,
-              width: context.widthPx,
-              decoration: BoxDecoration(
-                color: context.theme.appColors.primary,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(Dimens.extraLargePadding),
-                  bottomRight: Radius.circular(Dimens.extraLargePadding),
-                ),
+        title: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              _greeting(),
+              style: context.text.bodyMedium?.copyWith(
+                color: colors.onSurfaceVariant,
               ),
             ),
-            Padding(
-              padding: EdgeInsets.only(
-                top: 25,
-                left: Dimens.largePadding,
-                right: Dimens.largePadding,
-              ),
-              child: AppSearchBar(),
+            const SizedBox(height: Dimens.smallPadding / 2),
+            Text(
+              'Something sweet?',
+              style: context.text.displaySmall,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _NotificationButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final ColorScheme colors = context.colors;
+
+    return Stack(
+      clipBehavior: Clip.none,
+      children: <Widget>[
+        IconButton(
+          onPressed: () {},
+          style: IconButton.styleFrom(
+            backgroundColor: colors.surfaceContainer,
+            shape: AppShapes.pill,
+          ),
+          icon: AppSvgViewer(
+            Assets.icons.notification,
+            width: 20,
+            color: colors.onSurface,
+          ),
+        ),
+        Positioned(
+          top: 10,
+          right: 10,
+          child: Container(
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(
+              color: colors.primary,
+              shape: BoxShape.circle,
+              border: Border.all(color: colors.surface, width: 1.5),
+            ),
+          ),
         ),
       ],
     );
   }
-
-  @override
-  Size get preferredSize => Size.fromHeight(AppBar().preferredSize.height + 80);
 }

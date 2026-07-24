@@ -1,77 +1,62 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sweet_shop_app_ui/core/theme/theme.dart';
-import 'package:flutter_sweet_shop_app_ui/core/utils/sized_context.dart';
 
 import '../theme/dimens.dart';
+import '../theme/theme.dart';
 import 'app_svg_viewer.dart';
 
+/// Primary call-to-action.
+///
+/// Shape, height, padding and text style all come from `filledButtonTheme`, so
+/// this is a thin convenience wrapper rather than a restatement of the design.
+/// Pass [tonal] for a secondary-emphasis action.
 class AppButton extends StatelessWidget {
   const AppButton({
-    super.key,
     required this.title,
     required this.onPressed,
-    this.color,
-    this.textStyle,
-    this.iconColor,
-    this.width,
+    super.key,
     this.iconPath,
     this.margin,
-    this.borderRadius,
-    this.padding,
+    this.tonal = false,
+    this.expand = true,
   });
 
   final String title;
-  final GestureTapCallback? onPressed;
-  final Color? color;
-  final TextStyle? textStyle;
-  final Color? iconColor;
-  final double? width;
+  final VoidCallback? onPressed;
   final String? iconPath;
   final EdgeInsets? margin;
-  final double? borderRadius;
-  final WidgetStateProperty<EdgeInsetsGeometry?>? padding;
+
+  /// Secondary emphasis — filled with `secondaryContainer` instead of `primary`.
+  final bool tonal;
+
+  /// Whether the button stretches to the available width.
+  final bool expand;
 
   @override
-  Widget build(final BuildContext context) {
-    final colors = context.theme.appColors;
-    return Container(
-      width: width ?? context.widthPx,
-      height: 54.0,
-      margin: margin ?? const EdgeInsets.all(Dimens.largePadding),
-      child: FilledButton(
-        style: ButtonStyle(
-          padding: padding,
-          backgroundColor:
-              color == null
-                  ? (WidgetStateProperty.resolveWith<Color>((
-                    final Set<WidgetState> states,
-                  ) {
-                    if (states.contains(WidgetState.disabled)) {
-                      return colors.primary.withValues(alpha: 0.3);
-                    }
-                    return colors.primary;
-                  }))
-                  : WidgetStateProperty.all<Color>(color!),
-          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(
-                borderRadius ?? Dimens.smallCorners,
-              ),
-            ),
-          ),
-        ),
-        onPressed: onPressed,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (iconPath != null) ...[
-              AppSvgViewer(iconPath ?? '', color: iconColor ?? colors.white),
-              const SizedBox(width: Dimens.largePadding),
-            ],
-            Text(title, style: textStyle),
-          ],
-        ),
-      ),
+  Widget build(BuildContext context) {
+    final ColorScheme colors = context.colors;
+    final Color foreground = tonal
+        ? colors.onSecondaryContainer
+        : colors.onPrimary;
+
+    final Widget label = Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        if (iconPath != null) ...<Widget>[
+          AppSvgViewer(iconPath!, width: 20, color: foreground),
+          const SizedBox(width: Dimens.mediumPadding),
+        ],
+        Text(title),
+      ],
+    );
+
+    final Widget button = tonal
+        ? FilledButton.tonal(onPressed: onPressed, child: label)
+        : FilledButton(onPressed: onPressed, child: label);
+
+    return Padding(
+      padding: margin ?? EdgeInsets.zero,
+      child: expand ? SizedBox(width: double.infinity, child: button) : button,
     );
   }
 }

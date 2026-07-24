@@ -1,30 +1,60 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sweet_shop_app_ui/core/theme/theme.dart';
 
 import '../gen/assets.gen.dart';
 import '../theme/dimens.dart';
+import '../theme/theme.dart';
 import 'app_svg_viewer.dart';
 
+/// Star rating.
+///
+/// Set [pill] when it sits over photography, where it needs its own scrim to
+/// stay legible against an unpredictable background.
 class RateWidget extends StatelessWidget {
-  const RateWidget({super.key, required this.rate, this.textColor});
+  const RateWidget({
+    required this.rate,
+    super.key,
+    this.textColor,
+    this.pill = false,
+  });
 
   final String rate;
   final Color? textColor;
+  final bool pill;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    final ColorScheme colors = context.colors;
+
+    final Widget content = Row(
       mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
       spacing: Dimens.smallPadding,
-      children: [
+      children: <Widget>[
         AppSvgViewer(
           Assets.icons.starFilled,
-          color: context.theme.appColors.primary,
-          width: 16,
+          color: context.semantics.rating,
+          width: 14,
         ),
-        Text(rate, style: TextStyle(color: textColor, fontSize: 12)),
+        Text(
+          rate,
+          style: AppTypography.price(12).copyWith(
+            color: textColor ?? (pill ? colors.onSurface : colors.onSurfaceVariant),
+          ),
+        ),
       ],
+    );
+
+    if (!pill) return content;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: Dimens.padding,
+        vertical: Dimens.smallPadding * 0.75,
+      ),
+      decoration: BoxDecoration(
+        color: colors.surface.withValues(alpha: 0.88),
+        borderRadius: AppShapes.radiusSm,
+      ),
+      child: content,
     );
   }
 }

@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_sweet_shop_app_ui/core/utils/check_theme_status.dart';
 
+import '../theme/theme.dart';
+
+/// Renders one of the bundled SVG icons.
+///
+/// When no colour is given the icon takes `onSurfaceVariant` from the scheme, so
+/// icons stay tonally consistent in both brightnesses. The previous version
+/// hard-coded pure white in dark mode, which read louder than anything else on
+/// the surface.
 class AppSvgViewer extends StatelessWidget {
   const AppSvgViewer(
     this.path, {
@@ -24,12 +31,10 @@ class AppSvgViewer extends StatelessWidget {
       path,
       width: width,
       height: height,
-      colorFilter:
-          color == null
-              ? checkDarkMode(context)
-                  ? ColorFilter.mode(Colors.white, BlendMode.srcIn)
-                  : null
-              : ColorFilter.mode(color!, BlendMode.srcIn),
+      colorFilter: ColorFilter.mode(
+        color ?? context.colors.onSurfaceVariant,
+        BlendMode.srcIn,
+      ),
       fit: fit ?? BoxFit.contain,
     );
   }

@@ -1,107 +1,105 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_sweet_shop_app_ui/core/theme/dimens.dart';
-import 'package:flutter_sweet_shop_app_ui/core/theme/theme.dart';
-import 'package:flutter_sweet_shop_app_ui/core/widgets/app_divider.dart';
-import 'package:flutter_sweet_shop_app_ui/core/widgets/app_svg_viewer.dart';
-import 'package:flutter_sweet_shop_app_ui/core/widgets/rate_widget.dart';
-import 'package:flutter_sweet_shop_app_ui/features/cart_feature/data/models/cart_item_model.dart';
-import 'package:flutter_sweet_shop_app_ui/features/cart_feature/presentation/bloc/cart_cubit.dart';
 
 import '../../../../core/gen/assets.gen.dart';
+import '../../../../core/theme/dimens.dart';
+import '../../../../core/theme/theme.dart';
+import '../../../../core/widgets/app_svg_viewer.dart';
+import '../../data/models/cart_item_model.dart';
+import '../bloc/cart_cubit.dart';
 import 'cart_actions.dart';
 
+/// Cart line items, each swipeable to remove.
+///
+/// Rows sit on their own tonal card rather than being separated by dividers, so
+/// each item reads as a discrete object you can act on.
 class CartListWidget extends StatelessWidget {
-  const CartListWidget({super.key, required this.items});
+  const CartListWidget({required this.items, super.key});
 
   final List<CartItemModel> items;
 
   @override
   Widget build(BuildContext context) {
-    final appTypography = context.theme.appTypography;
-    final appColors = context.theme.appColors;
+    final ColorScheme colors = context.colors;
+
     return ListView.separated(
+      padding: const EdgeInsets.fromLTRB(
+        Dimens.gutter,
+        Dimens.padding,
+        Dimens.gutter,
+        Dimens.padding,
+      ),
       itemCount: items.length,
-      itemBuilder: (final context, final index) {
+      separatorBuilder: (_, _) => const SizedBox(height: Dimens.mediumPadding),
+      itemBuilder: (BuildContext context, int index) {
+        final CartItemModel item = items[index];
+
         return Dismissible(
-          key: Key(items[index].product.id.toString()),
+          key: ValueKey<int>(item.product.id),
+          direction: DismissDirection.endToStart,
+          onDismissed: (_) =>
+              context.read<CartCubit>().removeItem(item.product.id),
           background: Container(
-            color: appColors.error,
             alignment: Alignment.centerRight,
-            padding: EdgeInsets.only(right: 20),
+            padding: const EdgeInsets.only(right: Dimens.largePadding),
+            decoration: BoxDecoration(
+              color: colors.errorContainer,
+              borderRadius: AppShapes.radiusXl,
+            ),
             child: AppSvgViewer(
               Assets.icons.trash,
-              width: 28,
-              height: 28,
-              color: appColors.white,
+              width: 24,
+              color: colors.onErrorContainer,
             ),
           ),
-          direction: DismissDirection.endToStart,
-          onDismissed: (final direction) {
-            context.read<CartCubit>().removeItem(items[index].product.id);
-          },
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: Dimens.largePadding,
-              vertical: Dimens.veryLargePadding,
+          child: Container(
+            padding: const EdgeInsets.all(Dimens.mediumPadding),
+            decoration: BoxDecoration(
+              color: colors.surfaceContainerLow,
+              borderRadius: AppShapes.radiusXl,
             ),
             child: Row(
-              spacing: Dimens.largePadding,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox.shrink(),
-                SizedBox(
-                  height: 95,
-                  width: 95,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(Dimens.corners),
-                    child: Image.asset(
-                      items[index].product.imageUrl,
-                      fit: BoxFit.cover,
-                    ),
+              children: <Widget>[
+                ClipRRect(
+                  borderRadius: AppShapes.radiusMd,
+                  child: Image.asset(
+                    item.product.imageUrl,
+                    width: 84,
+                    height: 84,
+                    fit: BoxFit.cover,
                   ),
                 ),
+                const SizedBox(width: Dimens.mediumPadding),
                 Expanded(
                   child: Column(
-                    spacing: Dimens.largePadding,
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            items[index].product.name,
-                            style: appTypography.bodyLarge,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          RateWidget(
-                            rate: items[index].product.rate.toString(),
-                          ),
-                        ],
+                    children: <Widget>[
+                      Text(
+                        item.product.name,
+                        style: context.text.titleSmall,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
+                      const SizedBox(height: 2),
+                      Text(
+                        '${item.product.weight.toStringAsFixed(1)} kg',
+                        style: context.text.bodySmall?.copyWith(
+                          color: colors.onSurfaceVariant,
+                        ),
+                      ),
+                      const SizedBox(height: Dimens.mediumPadding),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
+                        children: <Widget>[
                           Expanded(
-                            child: Column(
-                              spacing: Dimens.largePadding,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '${items[index].product.weight} kg',
-                                  style: appTypography.labelMedium.copyWith(
-                                    color: appColors.gray4,
-                                  ),
-                                ),
-                                Text(
-                                  '\$ ${items[index].product.price}',
-                                  style: appTypography.bodyLarge,
-                                ),
-                              ],
+                            child: Text(
+                              '\$${item.totalPrice.toStringAsFixed(2)}',
+                              style: AppTypography.price(16).copyWith(
+                                color: context.semantics.priceAccent,
+                              ),
                             ),
                           ),
-                          CartActions(item: items[index]),
+                          CartActions(item: item),
                         ],
                       ),
                     ],
@@ -111,9 +109,6 @@ class CartListWidget extends StatelessWidget {
             ),
           ),
         );
-      },
-      separatorBuilder: (final context, final index) {
-        return AppDivider();
       },
     );
   }

@@ -1,131 +1,62 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sweet_shop_app_ui/core/theme/theme.dart';
-import 'package:flutter_sweet_shop_app_ui/core/utils/app_navigator.dart';
-import 'package:flutter_sweet_shop_app_ui/core/widgets/app_title_widget.dart';
-import 'package:flutter_sweet_shop_app_ui/core/widgets/rate_widget.dart';
-import 'package:flutter_sweet_shop_app_ui/features/home_feature/presentation/screens/products_screen.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../core/router/routes.dart';
 import '../../../../core/theme/dimens.dart';
+import '../../../../core/widgets/app_title_widget.dart';
+import '../../../cart_feature/data/data_source/local/fake_products.dart';
+import '../../../cart_feature/data/models/product_model.dart';
 import '../../data/data_source/local/sample_data.dart';
-import '../screens/product_details_screen.dart';
+import 'product_card.dart';
 
+/// The stacked "Featured / New / Popular" product rails on the home tab.
+///
+/// Each rail draws from [FakeProducts] rather than the parallel name/image string
+/// lists the original used, so a card can hand a real [ProductModel] to the
+/// details route instead of the screen re-deriving it from sample data.
 class ProductsList extends StatelessWidget {
   const ProductsList({super.key});
 
+  /// Rotates the product order per rail so the three rails do not show an
+  /// identical sequence.
+  List<ProductModel> _railFor(int index) {
+    final List<ProductModel> all = FakeProducts.products;
+    final int offset = (index * 3) % all.length;
+    return <ProductModel>[...all.sublist(offset), ...all.sublist(0, offset)];
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: titleOfTheListOfProducts.length,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemBuilder: (final context, final index) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            AppTitleWidget(
-              title: titleOfTheListOfProducts[index],
-              onPressed: () {
-                appPush(context, ProductsScreen());
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        for (int i = 0; i < titleOfTheListOfProducts.length; i++) ...<Widget>[
+          if (i > 0) const SizedBox(height: Dimens.veryLargePadding),
+          AppTitleWidget(
+            title: titleOfTheListOfProducts[i],
+            onPressed: () => context.push(Routes.products),
+          ),
+          const SizedBox(height: Dimens.mediumPadding),
+          SizedBox(
+            height: 268,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: Dimens.gutter),
+              itemCount: 6,
+              separatorBuilder: (_, _) =>
+                  const SizedBox(width: Dimens.mediumPadding),
+              itemBuilder: (BuildContext context, int index) {
+                return ProductCard(
+                  product: _railFor(i)[index],
+                  heroPrefix: 'rail$i',
+                  index: index,
+                  width: 172,
+                );
               },
             ),
-            SizedBox(
-              height: 100,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: productsName.length,
-                shrinkWrap: true,
-                itemBuilder: (final context, final index) {
-                  return Padding(
-                    padding: const EdgeInsets.only(left: Dimens.largePadding),
-                    child: InkWell(
-                      onTap: (){
-                        appPush(context, ProductDetailsScreen());
-                      },
-                      borderRadius: BorderRadius.circular(24),
-                      child: SizedBox(
-                        height: 100,
-                        width: 196,
-                        child: Stack(
-                          alignment: Alignment.bottomCenter,
-                          children: [
-                            SizedBox(
-                              height: 100,
-                              width: 196,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(24),
-                                child: Image.asset(
-                                  productsImage[index],
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width: 50,
-                                  height: 24,
-                                  margin: EdgeInsets.symmetric(
-                                    horizontal: Dimens.largePadding,
-                                    vertical: Dimens.padding,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(
-                                      Dimens.smallCorners,
-                                    ),
-                                    color: context.theme.scaffoldBackgroundColor,
-                                  ),
-                                  child: RateWidget(rate: '7.10'),
-                                ),
-                                Container(
-                                  width: 196,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(24),
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                      colors: [
-                                        Colors.transparent,
-                                        context.theme.appColors.black.withValues(
-                                          alpha: 0.4,
-                                        ),
-                                        context.theme.appColors.black.withValues(
-                                          alpha: 0.7,
-                                        ),
-                                        context.theme.appColors.black.withValues(
-                                          alpha: 0.8,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      productsName[index],
-                                      style: context
-                                          .theme
-                                          .appTypography
-                                          .titleSmall
-                                          .copyWith(
-                                            color: context.theme.appColors.white,
-                                          ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
-        );
-      },
+          ),
+        ],
+      ],
     );
   }
 }

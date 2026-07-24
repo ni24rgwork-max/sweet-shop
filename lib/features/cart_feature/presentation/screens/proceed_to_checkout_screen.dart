@@ -1,160 +1,153 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sweet_shop_app_ui/core/theme/dimens.dart';
-import 'package:flutter_sweet_shop_app_ui/core/theme/theme.dart';
-import 'package:flutter_sweet_shop_app_ui/core/utils/app_navigator.dart';
-import 'package:flutter_sweet_shop_app_ui/core/widgets/app_divider.dart';
-import 'package:flutter_sweet_shop_app_ui/core/widgets/app_scaffold.dart';
-import 'package:flutter_sweet_shop_app_ui/core/widgets/app_svg_viewer.dart';
-import 'package:flutter_sweet_shop_app_ui/core/widgets/bordered_container.dart';
-import 'package:flutter_sweet_shop_app_ui/core/widgets/general_app_bar.dart';
-import 'package:flutter_sweet_shop_app_ui/features/cart_feature/presentation/screens/change_address_screen.dart';
-import 'package:flutter_sweet_shop_app_ui/features/cart_feature/presentation/screens/payment_methods_screen.dart';
-import 'package:flutter_sweet_shop_app_ui/features/cart_feature/presentation/widgets/orders_list_for_checkout.dart';
-import 'package:flutter_sweet_shop_app_ui/features/cart_feature/presentation/widgets/payment_details_item.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/gen/assets.gen.dart';
-import '../../../../core/widgets/app_button.dart';
+import '../../../../core/router/routes.dart';
+import '../../../../core/theme/dimens.dart';
+import '../../../../core/theme/theme.dart';
+import '../../../../core/widgets/app_svg_viewer.dart';
+import '../../../../core/widgets/general_app_bar.dart';
+import '../bloc/cart_cubit.dart';
+import '../widgets/orders_list_for_checkout.dart';
+import '../widgets/payment_details_item.dart';
 
+/// Checkout review.
+///
+/// Grouped into three labelled cards — costs, address, items — instead of one
+/// undifferentiated column, and the figures are computed from the cart rather
+/// than hardcoded.
 class ProceedToCheckoutScreen extends StatelessWidget {
   const ProceedToCheckoutScreen({super.key});
 
+  static const double _delivery = 10;
+  static const double _discount = 10;
+
   @override
   Widget build(BuildContext context) {
-    final appTypography = context.theme.appTypography;
-    final appColors = context.theme.appColors;
-    return AppScaffold(
-      appBar: GeneralAppBar(title: 'Proceed To Checkout'),
-      body: SingleChildScrollView(
-        child: Column(
-          spacing: Dimens.largePadding,
-          children: [
-            SizedBox.shrink(),
-            BorderedContainer(
-              padding: EdgeInsets.symmetric(horizontal: Dimens.largePadding),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      vertical: Dimens.largePadding,
-                    ),
-                    child: Text(
-                      'Payment details',
-                      style: appTypography.bodyLarge.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  AppDivider(),
-                  PaymentDetailsItem(
-                    title: 'Product Price',
-                    subtitle: '\$ 98.00',
-                  ),
-                  PaymentDetailsItem(title: 'Delivery', subtitle: '\$ 10.00'),
-                  PaymentDetailsItem(title: 'Discount', subtitle: '\$ 10.00'),
-                  Text(
-                    ' - - - - - - - -' * 10,
-                    overflow: TextOverflow.clip,
-                    maxLines: 1,
-                    style: TextStyle(color: appColors.gray2),
-                  ),
-                  PaymentDetailsItem(title: 'Total Cost', subtitle: '\$ 98.00'),
-                ],
-              ),
+    return Scaffold(
+      appBar: const GeneralAppBar(title: 'Checkout'),
+      body: BlocBuilder<CartCubit, CartState>(
+        builder: (BuildContext context, CartState state) {
+          final double subtotal = state is CartLoaded ? state.totalAmount : 0;
+          final double total = subtotal + _delivery - _discount;
+
+          return ListView(
+            padding: const EdgeInsets.fromLTRB(
+              Dimens.gutter,
+              Dimens.padding,
+              Dimens.gutter,
+              Dimens.gutter,
             ),
-            BorderedContainer(
-              padding: EdgeInsets.symmetric(horizontal: Dimens.largePadding),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: Dimens.padding),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Destination address',
-                          style: appTypography.bodyLarge.copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        BorderedContainer(
-                          borderColor: appColors.primary,
-                          borderRadius: Dimens.smallCorners,
-                          child: InkWell(
-                            onTap: () {
-                              appPush(context, ChangeAddressScreen());
-                            },
-                            borderRadius: BorderRadius.circular(
-                              Dimens.smallCorners,
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.all(Dimens.padding),
-                              child: Text(
-                                'Change Address',
-                                style: TextStyle(color: appColors.primary),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+            children: <Widget>[
+              _Section(
+                title: 'Payment details',
+                child: Column(
+                  children: <Widget>[
+                    PaymentDetailsItem(
+                      title: 'Subtotal',
+                      subtitle: '\$${subtotal.toStringAsFixed(2)}',
                     ),
-                  ),
-                  SizedBox(height: Dimens.largePadding),
-                  AppDivider(),
-                  ListTile(
-                    contentPadding: EdgeInsets.symmetric(
-                      vertical: Dimens.smallPadding,
+                    PaymentDetailsItem(
+                      title: 'Delivery',
+                      subtitle: '\$${_delivery.toStringAsFixed(2)}',
                     ),
-                    leading: AppSvgViewer(
+                    PaymentDetailsItem(
+                      title: 'Discount',
+                      subtitle: '-\$${_discount.toStringAsFixed(2)}',
+                    ),
+                    const Divider(),
+                    PaymentDetailsItem(
+                      title: 'Total',
+                      subtitle: '\$${total.toStringAsFixed(2)}',
+                      emphasised: true,
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: Dimens.largePadding),
+              _Section(
+                title: 'Delivery address',
+                action: TextButton(
+                  onPressed: () => context.push(Routes.changeAddress),
+                  child: const Text('Change'),
+                ),
+                child: Row(
+                  children: <Widget>[
+                    AppSvgViewer(
                       Assets.icons.location,
-                      color: appColors.primary,
+                      width: 20,
+                      color: context.colors.primary,
                     ),
-                    title: Text(
-                      'Montgomery Street Country Street East Pkwy',
-                      style: appTypography.titleSmall.copyWith(
-                        color: appColors.gray4,
+                    const SizedBox(width: Dimens.mediumPadding),
+                    Expanded(
+                      child: Text(
+                        'Montgomery Street, Country Street East Pkwy',
+                        style: context.text.bodyMedium?.copyWith(
+                          color: context.colors.onSurfaceVariant,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Dimens.padding),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Orders list',
-                    style: appTypography.bodyLarge.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  SizedBox(height: Dimens.largePadding),
-                  AppDivider(),
-                  OrdersListForCheckout(),
-                ],
+
+              const SizedBox(height: Dimens.largePadding),
+              const _Section(
+                title: 'Your order',
+                child: OrdersListForCheckout(),
               ),
-            ),
-          ],
+            ],
+          );
+        },
+      ),
+      bottomNavigationBar: SafeArea(
+        minimum: const EdgeInsets.fromLTRB(
+          Dimens.gutter,
+          Dimens.padding,
+          Dimens.gutter,
+          Dimens.mediumPadding,
+        ),
+        child: FilledButton(
+          onPressed: () => context.push(Routes.paymentMethods),
+          child: const Text('Continue to payment'),
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.only(
-          left: Dimens.largePadding,
-          right: Dimens.largePadding,
-          bottom: Dimens.padding,
-        ),
-        child: AppButton(
-          onPressed: () {
-            appPush(context, PaymentMethodsScreen());
-          },
-          title: 'Continue To Payment',
-          textStyle: appTypography.bodyLarge,
-          borderRadius: Dimens.corners,
-          margin: EdgeInsets.symmetric(vertical: Dimens.largePadding),
-        ),
+    );
+  }
+}
+
+/// Titled card wrapper used by each block on this screen.
+class _Section extends StatelessWidget {
+  const _Section({required this.title, required this.child, this.action});
+
+  final String title;
+  final Widget child;
+  final Widget? action;
+
+  @override
+  Widget build(BuildContext context) {
+    final ColorScheme colors = context.colors;
+
+    return Container(
+      padding: const EdgeInsets.all(Dimens.mediumPadding),
+      decoration: BoxDecoration(
+        color: colors.surfaceContainerLow,
+        borderRadius: AppShapes.radiusXl,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Expanded(child: Text(title, style: context.text.titleMedium)),
+              if (action != null) action!,
+            ],
+          ),
+          const SizedBox(height: Dimens.padding),
+          child,
+        ],
       ),
     );
   }

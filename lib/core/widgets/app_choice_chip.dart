@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sweet_shop_app_ui/core/theme/theme.dart';
-import 'package:flutter_sweet_shop_app_ui/core/utils/check_theme_status.dart';
 
+import '../theme/theme.dart';
+
+/// Selectable chip for weights, filters and category pills.
+///
+/// Colours and shape come from `chipTheme`; only the selected label colour needs
+/// resolving here, since it flips between two `on*` roles.
 class AppChoiceChip extends StatelessWidget {
   const AppChoiceChip({
-    super.key,
     required this.label,
     required this.selected,
+    super.key,
     this.onSelected,
   });
 
@@ -16,18 +20,15 @@ class AppChoiceChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChoiceChip(
+    final ColorScheme colors = context.colors;
+
+    return FilterChip(
       label: Text(label),
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       selected: selected,
       onSelected: onSelected,
-      selectedColor: context.theme.appColors.primary,
-      showCheckmark: false,
-      labelStyle: TextStyle(
-        color:
-            selected
-                ? Colors.white
-                : (checkDarkMode(context) ? Colors.white : Colors.black),
+      labelStyle: context.text.labelLarge?.copyWith(
+        color: selected ? colors.onSecondaryContainer : colors.onSurfaceVariant,
+        fontWeight: selected ? FontWeight.w700 : FontWeight.w600,
       ),
     );
   }

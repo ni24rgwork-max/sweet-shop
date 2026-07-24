@@ -1,85 +1,88 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sweet_shop_app_ui/core/theme/theme.dart';
-import 'package:flutter_sweet_shop_app_ui/core/widgets/app_divider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/theme/dimens.dart';
-import '../../../home_feature/data/data_source/local/sample_data.dart';
+import '../../../../core/theme/theme.dart';
+import '../../data/models/cart_item_model.dart';
+import '../bloc/cart_cubit.dart';
 
+/// Read-only summary of what is being ordered.
+///
+/// Reads the actual cart rather than the sample image list, so the checkout
+/// summary matches the cart the user just came from.
 class OrdersListForCheckout extends StatelessWidget {
   const OrdersListForCheckout({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final appColors = context.theme.appColors;
-    return ListView.separated(
-      itemCount: categoryProductsImage.length,
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      itemBuilder: (final context, final index) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: Dimens.veryLargePadding,
-          ),
-          child: Row(
-            spacing: Dimens.largePadding,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: 95,
-                width: 95,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(Dimens.corners),
-                  child: Image.asset(
-                    categoryProductsImage[index],
-                    fit: BoxFit.cover,
-                  ),
-                ),
+    final ColorScheme colors = context.colors;
+
+    return BlocBuilder<CartCubit, CartState>(
+      builder: (BuildContext context, CartState state) {
+        final List<CartItemModel> items = state is CartLoaded
+            ? state.items
+            : const <CartItemModel>[];
+
+        if (items.isEmpty) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: Dimens.largePadding),
+            child: Text(
+              'No items yet.',
+              style: context.text.bodyMedium?.copyWith(
+                color: colors.onSurfaceVariant,
               ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: 40,
-                      child: Text(
-                        'Sponge donut',
-                        style: context.theme.appTypography.bodyLarge.copyWith(
-                          fontSize: 15,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 2,
+            ),
+          );
+        }
+
+        return Column(
+          children: <Widget>[
+            for (final CartItemModel item in items)
+              Padding(
+                padding: const EdgeInsets.only(bottom: Dimens.mediumPadding),
+                child: Row(
+                  children: <Widget>[
+                    ClipRRect(
+                      borderRadius: AppShapes.radiusSm,
+                      child: Image.asset(
+                        item.product.imageUrl,
+                        width: 56,
+                        height: 56,
+                        fit: BoxFit.cover,
                       ),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Column(
-                          spacing: Dimens.largePadding,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Quantity: ${index + 3} pcs',
-                              style: context.theme.appTypography.labelMedium
-                                  .copyWith(color: appColors.gray4),
+                    const SizedBox(width: Dimens.mediumPadding),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            item.product.name,
+                            style: context.text.titleSmall,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Text(
+                            '${item.quantity} × '
+                            '\$${item.product.price.toStringAsFixed(2)}',
+                            style: context.text.bodySmall?.copyWith(
+                              color: colors.onSurfaceVariant,
                             ),
-                            Text(
-                              '\$${index + 1}8.00',
-                              style: context.theme.appTypography.bodyLarge,
-                            ),
-                          ],
-                        ),
-                      ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    Text(
+                      '\$${item.totalPrice.toStringAsFixed(2)}',
+                      style: AppTypography.price(14).copyWith(
+                        color: colors.onSurface,
+                      ),
                     ),
                   ],
                 ),
               ),
-            ],
-          ),
+          ],
         );
-      },
-      separatorBuilder: (final context, final index) {
-        return AppDivider();
       },
     );
   }

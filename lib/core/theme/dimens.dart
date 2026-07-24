@@ -20,11 +20,16 @@ class Dimens {
   // Extra large padding, four times the base value.
   static const double extraLargePadding = base * 4;
 
-  // Corner radius for rounded corners, twice the base value.
-  static const double corners = base * 2;
+  // Horizontal screen gutter. Expressive layouts breathe more than baseline
+  // M3, so content sits further from the edge than the old 8pt.
+  static const double gutter = base * 2.5;
 
-  // Small corner radius, equal to the base value.
-  static const double smallCorners = base;
+  // Corner radius for rounded corners. Retuned to the expressive shape scale —
+  // see AppShapes, which is the source of truth for shape.
+  static const double corners = base * 3.5;
+
+  // Small corner radius, for chips and inputs.
+  static const double smallCorners = base * 2;
 
   // Breakpoint for very small devices (e.g., small smartphones).
   static const double verySmallDeviceBreakPoint = 376.0;

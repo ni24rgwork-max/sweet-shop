@@ -1,157 +1,89 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_sweet_shop_app_ui/core/theme/dimens.dart';
-import 'package:flutter_sweet_shop_app_ui/core/theme/theme.dart';
-import 'package:flutter_sweet_shop_app_ui/core/widgets/rate_widget.dart';
+import 'package:go_router/go_router.dart';
 
-import '../../../../core/widgets/app_button.dart';
-import '../../../../core/widgets/app_scaffold.dart';
+import '../../../../core/router/routes.dart';
+import '../../../../core/theme/dimens.dart';
 import '../../../../core/widgets/app_title_widget.dart';
 import '../../../../core/widgets/general_app_bar.dart';
 import '../../../cart_feature/data/data_source/local/fake_products.dart';
 import '../../../cart_feature/data/models/product_model.dart';
-import '../../../cart_feature/presentation/bloc/cart_cubit.dart';
 import '../../data/data_source/local/sample_data.dart';
+import '../widgets/product_card.dart';
 
+/// Category browser — one horizontal rail per category.
+///
+/// Cards are the shared [ProductCard], so add-to-cart adds the product actually
+/// shown. The original picked a random product from the sample list regardless of
+/// which card you tapped.
 class CategoriesScreen extends StatelessWidget {
   const CategoriesScreen({super.key});
 
+  /// Deduplicated — the sample list repeats every category name twice.
+  List<int> get _categoryIndices {
+    final Set<String> seen = <String>{};
+    final List<int> indices = <int>[];
+    for (int i = 0; i < titlesOfCategories.length; i++) {
+      if (seen.add(titlesOfCategories[i])) indices.add(i);
+    }
+    return indices;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return AppScaffold(
-      appBar: GeneralAppBar(title: 'Categories'),
-      padding: EdgeInsets.zero,
+    final List<int> categories = _categoryIndices;
+
+    return Scaffold(
+      appBar: const GeneralAppBar(title: 'Categories'),
       body: ListView.separated(
-        itemCount: titlesOfCategories.length,
-        shrinkWrap: true,
-        itemBuilder: (final context, final index) {
+        padding: const EdgeInsets.only(
+          top: Dimens.padding,
+          bottom: Dimens.gutter,
+        ),
+        itemCount: categories.length,
+        separatorBuilder: (_, _) =>
+            const SizedBox(height: Dimens.veryLargePadding),
+        itemBuilder: (BuildContext context, int index) {
+          final int category = categories[index];
+          final List<ProductModel> products = _productsFor(index);
+
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               AppTitleWidget(
-                thumbnailPath: imagesOfCategories[index],
-                title: titlesOfCategories[index],
-                onPressed: () {},
+                thumbnailPath: imagesOfCategories[category],
+                title: titlesOfCategories[category],
+                onPressed: () => context.push(Routes.products),
               ),
+              const SizedBox(height: Dimens.mediumPadding),
               SizedBox(
-                height: 264,
-                child: ListView.builder(
-                  itemCount: categoryProductsImage.length,
+                height: 268,
+                child: ListView.separated(
                   scrollDirection: Axis.horizontal,
-                  shrinkWrap: true,
-                  itemBuilder: (final context, final index) {
-                    return Container(
-                      width: 138,
-                      height: 243,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        borderRadius: BorderRadius.circular(
-                          Dimens.largePadding,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: context.theme.appColors.black.withValues(
-                              alpha: 0.1,
-                            ),
-                            blurRadius: 10,
-                          ),
-                        ],
-                      ),
-                      margin: EdgeInsets.only(
-                        left: Dimens.largePadding,
-                        top: Dimens.smallPadding,
-                        bottom: Dimens.smallPadding,
-                      ),
-                      child: Column(
-                        spacing: Dimens.padding,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            height: 110,
-                            width: 180,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(
-                                Dimens.corners,
-                              ),
-                              child: Image.asset(
-                                categoryProductsImage[index],
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 32,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: Dimens.smallPadding,
-                              ),
-                              child: Center(
-                                child: Text(
-                                  categoryProductsName[index],
-                                  style: context.theme.appTypography.labelMedium
-                                      .copyWith(fontWeight: FontWeight.bold),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 2,
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              RateWidget(rate: '7.10'),
-                              Text(
-                                '1K+ Review',
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            ],
-                          ),
-                          Text(
-                            '\$ ${index + 1}8.00',
-                            style: context.theme.appTypography.labelLarge
-                                .copyWith(fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(
-                            width: 100,
-                            height: 32,
-                            child: AppButton(
-                              title: 'Add to Cart',
-                              onPressed: () {
-                                _addToCart(context);
-                              },
-                              margin: EdgeInsets.zero,
-                              padding: WidgetStateProperty.all<EdgeInsets>(
-                                EdgeInsets.symmetric(
-                                  horizontal: Dimens.padding,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: Dimens.gutter,
+                  ),
+                  itemCount: products.length,
+                  separatorBuilder: (_, _) =>
+                      const SizedBox(width: Dimens.mediumPadding),
+                  itemBuilder: (BuildContext context, int i) => ProductCard(
+                    product: products[i],
+                    heroPrefix: 'cat$index',
+                    index: i,
+                    width: 172,
+                  ),
                 ),
               ),
             ],
           );
         },
-        separatorBuilder: (final context, final index) {
-          return SizedBox(height: Dimens.largePadding);
-        },
       ),
     );
   }
 
-  void _addToCart(final BuildContext context) {
-    final cartCubit = context.read<CartCubit>();
-    final ProductModel product = FakeProducts.products[Random().nextInt(7)];
-    cartCubit.addItem(product);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('A random product was added to cart!')),
-    );
+  /// Rotates the product list per category so each rail differs.
+  List<ProductModel> _productsFor(int index) {
+    final List<ProductModel> all = FakeProducts.products;
+    final int offset = (index * 2) % all.length;
+    return <ProductModel>[...all.sublist(offset), ...all.sublist(0, offset)];
   }
 }

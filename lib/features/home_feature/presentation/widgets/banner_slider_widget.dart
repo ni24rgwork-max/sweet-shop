@@ -1,81 +1,94 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_sweet_shop_app_ui/core/theme/theme.dart';
-import 'package:flutter_sweet_shop_app_ui/core/utils/sized_context.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../../../core/theme/dimens.dart';
-import '../../../../core/utils/check_device_size.dart';
+import '../../../../core/theme/theme.dart';
 import '../../data/data_source/local/sample_data.dart';
-import '../bloc/banner_slider_cubit.dart';
 
-class BannerSliderWidget extends StatelessWidget {
+/// Special-offer carousel.
+///
+/// Built on the SDK's [CarouselView.weighted] in the Material "hero" layout: one
+/// dominant item with the next one peeking in at the right edge, so the row
+/// visibly invites a swipe. This replaced `carousel_slider` plus
+/// `smooth_page_indicator` plus a dedicated cubit — the weights, snapping and
+/// index reporting are all built in now.
+class BannerSliderWidget extends StatefulWidget {
   const BannerSliderWidget({super.key});
 
   @override
+  State<BannerSliderWidget> createState() => _BannerSliderWidgetState();
+}
+
+class _BannerSliderWidgetState extends State<BannerSliderWidget> {
+  int _index = 0;
+
+  @override
   Widget build(BuildContext context) {
-    return BlocProvider<BannerSliderCubit>(
-      create: (context) => BannerSliderCubit(),
-      child: const _BannerSliderWidget(),
+    final ColorScheme colors = context.colors;
+
+    return Column(
+      children: <Widget>[
+        SizedBox(
+          height: 172,
+          child: CarouselView.weighted(
+            flexWeights: const <int>[7, 1],
+            itemSnapping: true,
+            infinite: true,
+            shrinkExtent: 200,
+            backgroundColor: colors.surfaceContainer,
+            padding: const EdgeInsets.symmetric(
+              horizontal: Dimens.smallPadding,
+            ),
+            shape: const RoundedRectangleBorder(
+              borderRadius: AppShapes.radiusXl,
+            ),
+            overlayColor: WidgetStatePropertyAll<Color>(
+              colors.onSurface.withValues(alpha: 0.08),
+            ),
+            onIndexChanged: (int index) => setState(() => _index = index),
+            onTap: (_) {},
+            children: <Widget>[
+              for (final String banner in banners)
+                Image.asset(banner, fit: BoxFit.cover),
+            ],
+          ),
+        ),
+        const SizedBox(height: Dimens.mediumPadding),
+        _Dots(count: banners.length, active: _index),
+      ],
     );
   }
 }
 
-class _BannerSliderWidget extends StatelessWidget {
-  const _BannerSliderWidget();
+/// Page indicator. A selected dot stretches into a short bar rather than just
+/// changing colour, which reads at a glance.
+class _Dots extends StatelessWidget {
+  const _Dots({required this.count, required this.active});
+
+  final int count;
+  final int active;
 
   @override
   Widget build(BuildContext context) {
-    final watch = context.watch<BannerSliderCubit>();
-    final read = context.read<BannerSliderCubit>();
-    final colors = context.theme.appColors;
-    return Center(
-      child: SizedBox(
-        width:
-            checkDesktopSize(context)
-                ? Dimens.largeDeviceBreakPoint
-                : context.widthPx,
-        child: Column(
-          spacing: Dimens.padding,
-          children: [
-            CarouselSlider(
-              carouselController: watch.state.controller,
-              items:
-                  banners.map((banner) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: Dimens.largePadding,
-                      ),
-                      child: Image.asset(banner),
-                    );
-                  }).toList(),
-              options: CarouselOptions(
-                autoPlay: false,
-                enlargeCenterPage: true,
-                enlargeFactor: 0.5,
-                aspectRatio: 2.3,
-                viewportFraction: 1,
-                onPageChanged: (final index, final reason) {
-                  read.onPageChanged(index: index);
-                },
-              ),
+    final ColorScheme colors = context.colors;
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        for (int i = 0; i < count; i++)
+          AnimatedContainer(
+            duration: AppMotion.fast,
+            curve: AppMotion.spatialCurve,
+            margin: const EdgeInsets.symmetric(horizontal: 3),
+            height: 6,
+            width: i == active ? 20 : 6,
+            decoration: BoxDecoration(
+              color: i == active
+                  ? colors.primary
+                  : colors.onSurfaceVariant.withValues(alpha: 0.28),
+              borderRadius: BorderRadius.circular(3),
             ),
-            AnimatedSmoothIndicator(
-              activeIndex: watch.state.currentIndex,
-              count: banners.length,
-              effect: WormEffect(
-                activeDotColor: colors.primary,
-                dotColor: colors.gray,
-                dotHeight: 8,
-                dotWidth: 8,
-                spacing: 4,
-                type: WormType.normal,
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
+      ],
     );
   }
 }

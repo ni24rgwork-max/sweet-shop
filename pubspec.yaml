@@ -6,22 +6,31 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.7.2
+  sdk: ^3.10.0
 
 dependencies:
   flutter:
     sdk: flutter
 
+  # State management
   bloc: ^9.0.0
   flutter_bloc: ^9.1.1
+
+  # Routing
+  go_router: ^17.3.0
+
+  # Design system
+  google_fonts: ^8.2.0
+  material_symbols_icons: ^4.2960.0
+  animations: ^2.2.0
+
+  # Assets & content
   flutter_gen: ^5.10.0
-  google_fonts: ^6.2.1
-  animate_do: ^4.2.0
   flutter_svg: ^2.2.0
-  carousel_slider: ^5.0.0
-  smooth_page_indicator: ^1.2.1
   readmore: ^3.0.0
   dotted_border: ^3.1.0
+
+  # Map
   flutter_map: ^8.1.1
   latlong2: ^0.9.1
 

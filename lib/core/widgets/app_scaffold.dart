@@ -79,8 +79,8 @@ class AppScaffold extends StatelessWidget {
               EdgeInsets.symmetric(
                 horizontal:
                     checkVerySmallDeviceSize(context)
-                        ? Dimens.padding
-                        : Dimens.largePadding,
+                        ? Dimens.mediumPadding
+                        : Dimens.gutter,
               ),
           child:
               checkDesktopSize(context)

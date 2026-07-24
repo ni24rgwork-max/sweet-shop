@@ -1,204 +1,219 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_sweet_shop_app_ui/core/theme/theme.dart';
-import 'package:flutter_sweet_shop_app_ui/core/utils/sized_context.dart';
-import 'package:flutter_sweet_shop_app_ui/core/widgets/app_button.dart';
-import 'package:flutter_sweet_shop_app_ui/core/widgets/app_choice_chip.dart';
-import 'package:flutter_sweet_shop_app_ui/core/widgets/app_icon_buttons.dart';
-import 'package:flutter_sweet_shop_app_ui/core/widgets/app_read_more_text.dart';
-import 'package:flutter_sweet_shop_app_ui/core/widgets/app_scaffold.dart';
-import 'package:flutter_sweet_shop_app_ui/core/widgets/rate_widget.dart';
-import 'package:flutter_sweet_shop_app_ui/features/home_feature/presentation/widgets/user_profile_image.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/gen/assets.gen.dart';
 import '../../../../core/theme/dimens.dart';
+import '../../../../core/theme/theme.dart';
+import '../../../../core/widgets/app_bordered_icon_button.dart';
+import '../../../../core/widgets/app_choice_chip.dart';
+import '../../../../core/widgets/app_icon_buttons.dart';
+import '../../../../core/widgets/app_read_more_text.dart';
+import '../../../../core/widgets/app_svg_viewer.dart';
+import '../../../../core/widgets/rate_widget.dart';
 import '../../../cart_feature/data/data_source/local/fake_products.dart';
 import '../../../cart_feature/data/models/product_model.dart';
 import '../../../cart_feature/presentation/bloc/cart_cubit.dart';
 import '../../data/data_source/local/sample_data.dart';
-import '../widgets/product_details_app_bar.dart';
+import '../../data/product_details_args.dart';
+import '../widgets/user_profile_image.dart';
 
+/// Product details.
+///
+/// Restructured around a [CustomScrollView]: the photograph is a collapsing
+/// [SliverAppBar] that the content sheet slides over, and the price plus
+/// call-to-action are pinned to the bottom so they stay reachable at any scroll
+/// offset. The previous version nested a fixed-height `Stack` inside a `SizedBox`
+/// sized from the viewport, which clipped on short screens.
 class ProductDetailsScreen extends StatefulWidget {
-  const ProductDetailsScreen({super.key});
+  const ProductDetailsScreen({super.key, this.args});
+
+  /// Supplied by the card that opened this screen. Falls back to sample data when
+  /// the route is entered directly.
+  final ProductDetailsArgs? args;
 
   @override
   State<ProductDetailsScreen> createState() => _ProductDetailsScreenState();
 }
 
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
-  String _selectedWeight = weights[4];
+  late String _selectedWeight = weights[2];
+
+  ProductModel get _product =>
+      widget.args?.product ?? FakeProducts.products.first;
+
+  void _addToCart() {
+    context.read<CartCubit>().addItem(_product);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('${_product.name} added to cart')),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final appColor = context.theme.appColors;
-    final appTypography = context.theme.appTypography;
-    return AppScaffold(
-      safeAreaTop: false,
-      safeAreaBottom: false,
-      padding: EdgeInsets.zero,
-      body: SizedBox(
-        height: context.heightPx,
-        child: Stack(
-          children: [
-            Assets.images.bigCake.image(
-              width: context.widthPx,
-              fit: BoxFit.fitWidth,
-            ),
-            ProductDetailsAppBar(),
-            Positioned(
-              bottom: 0,
-              child: Stack(
-                children: [
-                  Positioned(
-                    bottom: 0,
-                    child: Container(
-                      height: 140,
-                      color: appColor.primary,
-                      child: Center(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: Dimens.largePadding,
-                            vertical: Dimens.padding,
-                          ),
-                          child: SizedBox(
-                            width:
-                                (context.widthPx < Dimens.largeDeviceBreakPoint
-                                    ? context.widthPx
-                                    : Dimens.mediumDeviceBreakPoint) -
-                                32,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  '\$50.00',
-                                  style: appTypography.bodyLarge.copyWith(
-                                    color: appColor.white,
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.w900,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 222,
-                                  child: AppButton(
-                                    margin: EdgeInsets.zero,
-                                    title: 'Add to cart',
-                                    onPressed: _addToCart,
-                                    borderRadius: Dimens.corners,
-                                    color: appColor.white,
-                                    textStyle: appTypography.bodyLarge.copyWith(
-                                      color: appColor.primary,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w900,
-                                    ),
-                                    iconColor: appColor.primary,
-                                    iconPath: Assets.icons.shoppingCart,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+    final ColorScheme colors = context.colors;
+
+    return Scaffold(
+      body: CustomScrollView(
+        slivers: <Widget>[
+          _PhotoHeader(product: _product, heroTag: widget.args?.heroTag),
+
+          SliverToBoxAdapter(
+            child: Container(
+              // Pulls the sheet up over the photo so the two overlap.
+              transform: Matrix4.translationValues(0, -Dimens.largePadding, 0),
+              decoration: BoxDecoration(
+                color: colors.surface,
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(AppShapes.hero),
+                ),
+              ),
+              padding: const EdgeInsets.fromLTRB(
+                Dimens.gutter,
+                Dimens.veryLargePadding,
+                Dimens.gutter,
+                Dimens.largePadding,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Expanded(
+                        child: Text(
+                          _product.name,
+                          style: context.text.headlineMedium,
                         ),
                       ),
-                    ),
-                  ),
-                  Container(
-                    height: context.heightPx * 0.4,
-                    margin: EdgeInsets.only(bottom: 112),
-                    width:
-                        context.widthPx < Dimens.largeDeviceBreakPoint
-                            ? context.widthPx
-                            : Dimens.mediumDeviceBreakPoint,
-                    decoration: BoxDecoration(
-                      color: context.theme.scaffoldBackgroundColor,
-                      borderRadius: BorderRadius.circular(Dimens.corners * 2),
-                    ),
-                    child: SingleChildScrollView(
-                      padding: EdgeInsets.all(Dimens.largePadding),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Chocolate Cake',
-                                style: appTypography.bodyLarge.copyWith(
-                                  fontSize: 18,
-                                ),
-                              ),
-                              RateWidget(rate: '9.10'),
-                            ],
-                          ),
-                          SizedBox(height: Dimens.largePadding),
-                          AppReadMoreText(productDescription),
-                          SizedBox(height: Dimens.padding),
-                          Divider(height: Dimens.largePadding),
-                          Text(
-                            'Seller',
-                            style: appTypography.bodyLarge.copyWith(
-                              fontSize: 18,
-                            ),
-                          ),
-                          ListTile(
-                            contentPadding: EdgeInsets.zero,
-                            leading: SizedBox(
-                              width: 44,
-                              height: 44,
-                              child: UserProfileImage(
-                                imagePath: Assets.images.profileImage.path,
-                              ),
-                            ),
-                            title: Text(
-                              'Luna Fisher',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            subtitle: Padding(
-                              padding: const EdgeInsets.only(
-                                top: Dimens.padding,
-                              ),
-                              child: Text('Cake'),
-                            ),
-                            trailing: AppIconButton(
-                              iconPath: Assets.icons.call,
-                              onPressed: () {},
-                              iconColor: appColor.primary,
-                              backgroundColor: appColor.primary.withValues(
-                                alpha: 0.2,
-                              ),
-                            ),
-                          ),
-                          Divider(height: 0),
-                          SizedBox(height: Dimens.padding),
-                          Text(
-                            'Select Weight',
-                            style: appTypography.bodyLarge.copyWith(
-                              fontSize: 18,
-                            ),
-                          ),
-                          SizedBox(height: Dimens.padding),
-                          Wrap(
-                            spacing: Dimens.largePadding,
-                            children:
-                                weights.map((weight) {
-                                  final isSelected = _selectedWeight == weight;
-                                  return AppChoiceChip(
-                                    label: weight,
-                                    selected: isSelected,
-                                    onSelected: (selected) {
-                                      setState(() {
-                                        _selectedWeight = weight;
-                                      });
-                                    },
-                                  );
-                                }).toList(),
-                          ),
-                        ],
+                      const SizedBox(width: Dimens.mediumPadding),
+                      Padding(
+                        padding: const EdgeInsets.only(top: Dimens.smallPadding),
+                        child: RateWidget(
+                          rate: _product.rate.toStringAsFixed(1),
+                        ),
                       ),
+                    ],
+                  ),
+                  const SizedBox(height: Dimens.mediumPadding),
+                  AppReadMoreText(productDescription),
+
+                  const SizedBox(height: Dimens.largePadding),
+                  Text('Select weight', style: context.text.titleMedium),
+                  const SizedBox(height: Dimens.mediumPadding),
+                  Wrap(
+                    spacing: Dimens.padding,
+                    runSpacing: Dimens.padding,
+                    children: <Widget>[
+                      for (final String weight in weights)
+                        AppChoiceChip(
+                          label: weight,
+                          selected: _selectedWeight == weight,
+                          onSelected: (_) =>
+                              setState(() => _selectedWeight = weight),
+                        ),
+                    ],
+                  ),
+
+                  const SizedBox(height: Dimens.largePadding),
+                  const Divider(),
+                  const SizedBox(height: Dimens.padding),
+                  Text('Baker', style: context.text.titleMedium),
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: SizedBox.square(
+                      dimension: 46,
+                      child: UserProfileImage(
+                        imagePath: Assets.images.profileImage.path,
+                      ),
+                    ),
+                    title: Text('Luna Fisher', style: context.text.titleSmall),
+                    subtitle: Text(
+                      'Cakes & pastries',
+                      style: context.text.bodySmall?.copyWith(
+                        color: colors.onSurfaceVariant,
+                      ),
+                    ),
+                    trailing: AppIconButton(
+                      iconPath: Assets.icons.call,
+                      onPressed: () {},
                     ),
                   ),
                 ],
+              ),
+            ),
+          ),
+        ],
+      ),
+      bottomNavigationBar: _CheckoutBar(
+        product: _product,
+        onAddToCart: _addToCart,
+      ),
+    );
+  }
+}
+
+/// Collapsing product photograph.
+class _PhotoHeader extends StatelessWidget {
+  const _PhotoHeader({required this.product, this.heroTag});
+
+  final ProductModel product;
+
+  /// Null when the route was entered directly, in which case there is no source
+  /// card to fly from and the photo simply fades in with the page.
+  final String? heroTag;
+
+  @override
+  Widget build(BuildContext context) {
+    final ColorScheme colors = context.colors;
+
+    return SliverAppBar(
+      expandedHeight: 340,
+      pinned: true,
+      stretch: true,
+      backgroundColor: colors.surface,
+      surfaceTintColor: Colors.transparent,
+      leadingWidth: 72,
+      leading: Padding(
+        padding: const EdgeInsets.only(left: Dimens.gutter),
+        child: AppBorderedIconButton(
+          iconPath: Assets.icons.arrowLeft,
+          onPressed: () => context.pop(),
+        ),
+      ),
+      actions: <Widget>[
+        AppBorderedIconButton(
+          iconPath: Assets.icons.heart,
+          onPressed: () {},
+        ),
+        const SizedBox(width: Dimens.gutter),
+      ],
+      flexibleSpace: FlexibleSpaceBar(
+        stretchModes: const <StretchMode>[StretchMode.zoomBackground],
+        background: Stack(
+          fit: StackFit.expand,
+          children: <Widget>[
+            if (heroTag != null)
+              Hero(
+                tag: heroTag!,
+                child: Image.asset(product.imageUrl, fit: BoxFit.cover),
+              )
+            else
+              Image.asset(product.imageUrl, fit: BoxFit.cover),
+            // Keeps the back and favourite buttons legible over a bright photo.
+            DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: <Color>[
+                    colors.surface.withValues(alpha: 0.35),
+                    Colors.transparent,
+                    Colors.transparent,
+                    colors.surface.withValues(alpha: 0.55),
+                  ],
+                  stops: const <double>[0, 0.28, 0.6, 1],
+                ),
               ),
             ),
           ],
@@ -206,13 +221,72 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       ),
     );
   }
+}
 
-  void _addToCart() {
-    final cartCubit = context.read<CartCubit>();
-    final ProductModel product = FakeProducts.products[Random().nextInt(7)];
-    cartCubit.addItem(product);
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text('${product.name} added to cart!')));
+/// Pinned price and call-to-action.
+class _CheckoutBar extends StatelessWidget {
+  const _CheckoutBar({required this.product, required this.onAddToCart});
+
+  final ProductModel product;
+  final VoidCallback onAddToCart;
+
+  @override
+  Widget build(BuildContext context) {
+    final ColorScheme colors = context.colors;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: colors.surfaceContainerLow,
+        border: Border(top: BorderSide(color: colors.outlineVariant)),
+      ),
+      child: SafeArea(
+        minimum: const EdgeInsets.fromLTRB(
+          Dimens.gutter,
+          Dimens.mediumPadding,
+          Dimens.gutter,
+          Dimens.mediumPadding,
+        ),
+        child: Row(
+          children: <Widget>[
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(
+                  'Total',
+                  style: context.text.bodySmall?.copyWith(
+                    color: colors.onSurfaceVariant,
+                  ),
+                ),
+                Text(
+                  '\$${product.price.toStringAsFixed(2)}',
+                  style: AppTypography.price(24).copyWith(
+                    color: colors.onSurface,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(width: Dimens.largePadding),
+            Expanded(
+              child: FilledButton(
+                onPressed: onAddToCart,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    AppSvgViewer(
+                      Assets.icons.shoppingCart,
+                      width: 20,
+                      color: colors.onPrimary,
+                    ),
+                    const SizedBox(width: Dimens.mediumPadding),
+                    const Text('Add to cart'),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

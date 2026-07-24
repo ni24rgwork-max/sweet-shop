@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sweet_shop_app_ui/core/theme/theme.dart';
 import 'package:readmore/readmore.dart';
 
+import '../theme/theme.dart';
+
+/// Collapsible body copy, used for product descriptions.
 class AppReadMoreText extends StatelessWidget {
   const AppReadMoreText(
-      this.text, {
-        super.key,
-        this.textAlign,
-        this.style,
-        this.trimLines,
-      });
+    this.text, {
+    super.key,
+    this.textAlign,
+    this.style,
+    this.trimLines,
+  });
 
   final String? text;
   final TextAlign? textAlign;
@@ -17,17 +19,24 @@ class AppReadMoreText extends StatelessWidget {
   final int? trimLines;
 
   @override
-  Widget build(final BuildContext context) {
-    final primaryColor = context.theme.appColors.primary;
+  Widget build(BuildContext context) {
+    final ColorScheme colors = context.colors;
+    final TextStyle link =
+        context.text.labelLarge?.copyWith(color: colors.primary) ??
+        TextStyle(color: colors.primary);
+
     return ReadMoreText(
       text ?? '',
-      textAlign: textAlign ?? TextAlign.justify,
-      trimLines: trimLines ?? 5,
+      textAlign: textAlign ?? TextAlign.start,
+      trimLines: trimLines ?? 4,
       trimMode: TrimMode.Line,
-      trimCollapsedText: ' Read more',
-      trimExpandedText: ' Read less',
-      moreStyle: TextStyle(color: primaryColor),
-      lessStyle: TextStyle(color: primaryColor),
+      trimCollapsedText: '  Read more',
+      trimExpandedText: '  Read less',
+      style:
+          style ??
+          context.text.bodyMedium?.copyWith(color: colors.onSurfaceVariant),
+      moreStyle: link,
+      lessStyle: link,
     );
   }
 }

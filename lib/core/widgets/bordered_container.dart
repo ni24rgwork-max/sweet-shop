@@ -1,23 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sweet_shop_app_ui/core/theme/dimens.dart';
-import 'package:flutter_sweet_shop_app_ui/core/theme/theme.dart';
-import 'package:flutter_sweet_shop_app_ui/core/utils/check_theme_status.dart';
 
+import '../theme/dimens.dart';
+import '../theme/theme.dart';
+
+/// Outlined surface. Defaults to the scheme's `outlineVariant` hairline.
 class BorderedContainer extends StatelessWidget {
-  final Widget child;
-  final Color? borderColor;
-  final Color? color;
-  final EdgeInsetsGeometry? padding;
-  final EdgeInsetsGeometry? margin;
-  final double? width;
-  final double? height;
-  final AlignmentGeometry? alignment;
-  final BoxConstraints? constraints;
-  final double? borderRadius;
-
   const BorderedContainer({
-    super.key,
     required this.child,
+    super.key,
     this.borderColor,
     this.padding,
     this.margin,
@@ -29,10 +19,20 @@ class BorderedContainer extends StatelessWidget {
     this.color,
   });
 
+  final Widget child;
+  final Color? borderColor;
+  final Color? color;
+  final EdgeInsetsGeometry? padding;
+  final EdgeInsetsGeometry? margin;
+  final double? width;
+  final double? height;
+  final AlignmentGeometry? alignment;
+  final BoxConstraints? constraints;
+  final double? borderRadius;
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      key: key,
       width: width,
       height: height,
       padding: padding,
@@ -42,11 +42,7 @@ class BorderedContainer extends StatelessWidget {
       decoration: BoxDecoration(
         color: color,
         border: Border.all(
-          color:
-              borderColor ??
-              (checkDarkMode(context)
-                  ? context.theme.appColors.gray.withValues(alpha: 0.2)
-                  : context.theme.appColors.gray),
+          color: borderColor ?? context.colors.outlineVariant,
         ),
         borderRadius: BorderRadius.circular(borderRadius ?? Dimens.corners),
       ),

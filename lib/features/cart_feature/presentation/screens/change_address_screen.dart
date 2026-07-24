@@ -1,119 +1,176 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_sweet_shop_app_ui/core/theme/dimens.dart';
-import 'package:flutter_sweet_shop_app_ui/core/theme/theme.dart';
-import 'package:flutter_sweet_shop_app_ui/core/utils/sized_context.dart';
-import 'package:flutter_sweet_shop_app_ui/core/widgets/app_divider.dart';
-import 'package:flutter_sweet_shop_app_ui/core/widgets/app_scaffold.dart';
-import 'package:flutter_sweet_shop_app_ui/core/widgets/general_app_bar.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/gen/assets.gen.dart';
-import '../../../../core/widgets/app_button.dart';
+import '../../../../core/theme/dimens.dart';
+import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/app_svg_viewer.dart';
+import '../../../../core/widgets/general_app_bar.dart';
 
-class ChangeAddressScreen extends StatelessWidget {
+/// Delivery address picker.
+///
+/// Like the payment screen, selection is owned by a single [RadioGroup] — the
+/// other half of the deprecated-`Radio` cleanup, and the reason tapping an address
+/// now selects it.
+class ChangeAddressScreen extends StatefulWidget {
   const ChangeAddressScreen({super.key});
 
   @override
+  State<ChangeAddressScreen> createState() => _ChangeAddressScreenState();
+}
+
+class _ChangeAddressScreenState extends State<ChangeAddressScreen> {
+  static const List<_Address> _addresses = <_Address>[
+    _Address('Home', 'Montgomery Street, Country Street East Pkwy'),
+    _Address('Office', '1180 Sixth Avenue, Floor 12'),
+    _Address("Parents' house", '54 Rosewood Lane, Brookfield'),
+  ];
+
+  String _selected = _addresses.first.label;
+
+  @override
   Widget build(BuildContext context) {
-    final appTypography = context.theme.appTypography;
-    final appColors = context.theme.appColors;
-    final List<String> titles = ['Home', 'Office', 'Parents\' house'];
-    return AppScaffold(
-      appBar: GeneralAppBar(title: 'Change Address'),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            ListView.separated(
-              itemCount: titles.length,
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemBuilder: (final context, final index) {
-                return InkWell(
-                  onTap: () {},
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        leading: AppSvgViewer(
-                          Assets.icons.location,
-                          color: appColors.primary,
-                        ),
-                        title: Text(
-                          titles[index],
-                          style: appTypography.bodyLarge,
-                        ),
-                        trailing: Radio(
-                          value: index == 0,
-                          groupValue: true,
-                          onChanged: (final value) {},
-                          activeColor: appColors.primary,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          left: 42,
-                          right: Dimens.largePadding,
-                          bottom: Dimens.largePadding,
-                        ),
-                        child: Text(
-                          'Montgomery Street Country Street East Pkwy',
-                          style: appTypography.bodySmall.copyWith(
-                            color: appColors.gray4,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-              separatorBuilder: (final context, final index) {
-                return AppDivider();
-              },
-            ),
-            SizedBox(height: Dimens.veryLargePadding,),
-            SizedBox(
-              width: context.widthPx,
-              child: DottedBorder(
-                options: RoundedRectDottedBorderOptions(
-                  dashPattern: [4],
-                  strokeWidth: 1,
-                  radius: Radius.circular(Dimens.corners),
-                  color: appColors.primary,
-                ),
+    final ColorScheme colors = context.colors;
+
+    return Scaffold(
+      appBar: const GeneralAppBar(title: 'Change address'),
+      body: RadioGroup<String>(
+        groupValue: _selected,
+        onChanged: (String? value) {
+          if (value != null) setState(() => _selected = value);
+        },
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(
+            Dimens.gutter,
+            Dimens.padding,
+            Dimens.gutter,
+            Dimens.gutter,
+          ),
+          children: <Widget>[
+            for (final _Address address in _addresses) ...<Widget>[
+              _AddressTile(
+                address: address,
+                selected: _selected == address.label,
+                onTap: () => setState(() => _selected = address.label),
+              ),
+              const SizedBox(height: Dimens.mediumPadding),
+            ],
+
+            const SizedBox(height: Dimens.padding),
+            DottedBorder(
+              options: RoundedRectDottedBorderOptions(
+                dashPattern: const <double>[6, 4],
+                strokeWidth: 1.5,
+                radius: const Radius.circular(AppShapes.md),
+                color: colors.outline,
+                padding: EdgeInsets.zero,
+              ),
+              child: Material(
+                color: Colors.transparent,
+                borderRadius: AppShapes.radiusMd,
+                clipBehavior: Clip.antiAlias,
                 child: InkWell(
-                  onTap: (){},
-                  borderRadius: BorderRadius.circular(Dimens.corners),
+                  onTap: () {},
                   child: Padding(
-                    padding: EdgeInsets.all(Dimens.mediumPadding),
+                    padding: const EdgeInsets.all(Dimens.mediumPadding),
                     child: Center(
                       child: Text(
-                        '+ Add a new address',
-                        style: appTypography.bodyLarge.copyWith(
-                          color: appColors.primary,
+                        '+  Add a new address',
+                        style: context.text.labelLarge?.copyWith(
+                          color: colors.primary,
                         ),
                       ),
                     ),
                   ),
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.only(
-          left: Dimens.largePadding,
-          right: Dimens.largePadding,
-          bottom: Dimens.padding,
+      bottomNavigationBar: SafeArea(
+        minimum: const EdgeInsets.fromLTRB(
+          Dimens.gutter,
+          Dimens.padding,
+          Dimens.gutter,
+          Dimens.mediumPadding,
         ),
-        child: AppButton(
-          onPressed: () {},
-          title: 'Apply',
-          textStyle: appTypography.bodyLarge,
-          borderRadius: Dimens.corners,
-          margin: EdgeInsets.symmetric(vertical: Dimens.largePadding),
+        child: FilledButton(
+          onPressed: () => context.pop(),
+          child: const Text('Apply'),
+        ),
+      ),
+    );
+  }
+}
+
+class _Address {
+  const _Address(this.label, this.detail);
+
+  final String label;
+  final String detail;
+}
+
+class _AddressTile extends StatelessWidget {
+  const _AddressTile({
+    required this.address,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final _Address address;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final ColorScheme colors = context.colors;
+
+    return Material(
+      color: selected ? colors.secondaryContainer : colors.surfaceContainerLow,
+      shape: RoundedRectangleBorder(
+        borderRadius: AppShapes.radiusMd,
+        side: BorderSide(
+          color: selected ? colors.primary : colors.outlineVariant,
+          width: selected ? 1.5 : 1,
+        ),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(Dimens.mediumPadding),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(top: 2),
+                child: AppSvgViewer(
+                  Assets.icons.location,
+                  width: 20,
+                  color: selected ? colors.primary : colors.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(width: Dimens.mediumPadding),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(address.label, style: context.text.titleSmall),
+                    const SizedBox(height: 2),
+                    Text(
+                      address.detail,
+                      style: context.text.bodySmall?.copyWith(
+                        color: colors.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Radio<String>(value: address.label),
+            ],
+          ),
         ),
       ),
     );
