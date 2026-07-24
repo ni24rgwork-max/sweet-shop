@@ -33,17 +33,22 @@ class GeneralAppBar extends StatelessWidget implements PreferredSizeWidget {
         ...?actions,
         const SizedBox(width: Dimens.padding),
       ],
+      // Center, not Padding alone: AppBar stretches `leading` to the full
+      // toolbar height, and a stretched StadiumBorder renders as a vertical
+      // ellipse rather than a circle.
       leading: showBackIcon
-          ? Padding(
-              padding: const EdgeInsets.only(left: Dimens.gutter),
-              child: AppBorderedIconButton(
-                iconPath: Assets.icons.arrowLeft,
-                onPressed: () => context.pop(),
+          ? Center(
+              child: Padding(
+                padding: const EdgeInsets.only(left: Dimens.gutter),
+                child: AppBorderedIconButton(
+                  iconPath: Assets.icons.arrowLeft,
+                  onPressed: () => context.pop(),
+                ),
               ),
             )
           : null,
-      leadingWidth: showBackIcon ? 72 : null,
-      titleSpacing: showBackIcon ? 0 : Dimens.gutter,
+      leadingWidth: showBackIcon ? 76 : null,
+      titleSpacing: showBackIcon ? Dimens.smallPadding : Dimens.gutter,
       bottom: bottom,
       toolbarHeight: 72,
     );

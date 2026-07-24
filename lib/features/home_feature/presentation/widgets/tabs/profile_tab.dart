@@ -202,13 +202,17 @@ class _Group extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: Dimens.smallPadding),
-      decoration: BoxDecoration(
-        color: context.colors.surfaceContainerLow,
-        borderRadius: AppShapes.radiusXl,
+    // Material rather than a decorated Container: ListTile paints its background
+    // and ink splash onto the nearest Material ancestor, so an intervening
+    // DecoratedBox with a colour hides them — which Flutter asserts on.
+    return Material(
+      color: context.colors.surfaceContainerLow,
+      borderRadius: AppShapes.radiusXl,
+      clipBehavior: Clip.antiAlias,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: Dimens.smallPadding),
+        child: Column(children: children),
       ),
-      child: Column(children: children),
     );
   }
 }

@@ -173,18 +173,24 @@ class _PhotoHeader extends StatelessWidget {
       stretch: true,
       backgroundColor: colors.surface,
       surfaceTintColor: Colors.transparent,
-      leadingWidth: 72,
-      leading: Padding(
-        padding: const EdgeInsets.only(left: Dimens.gutter),
-        child: AppBorderedIconButton(
-          iconPath: Assets.icons.arrowLeft,
-          onPressed: () => context.pop(),
+      leadingWidth: 76,
+      // Centred so the toolbar cannot stretch the circular buttons into
+      // ellipses — see the same note in GeneralAppBar.
+      leading: Center(
+        child: Padding(
+          padding: const EdgeInsets.only(left: Dimens.gutter),
+          child: AppBorderedIconButton(
+            iconPath: Assets.icons.arrowLeft,
+            onPressed: () => context.pop(),
+          ),
         ),
       ),
       actions: <Widget>[
-        AppBorderedIconButton(
-          iconPath: Assets.icons.heart,
-          onPressed: () {},
+        Center(
+          child: AppBorderedIconButton(
+            iconPath: Assets.icons.heart,
+            onPressed: () {},
+          ),
         ),
         const SizedBox(width: Dimens.gutter),
       ],
