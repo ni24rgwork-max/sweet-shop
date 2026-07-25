@@ -1,56 +1,68 @@
-# 🍰 Flutter Sweet Shop App [![Project Status](https://img.shields.io/badge/status-under%20development-orange.svg)]()
+# 🍰 Sweet Shop
 
-A complete Sweet Shop UI built with Flutter, perfect for learning Flutter UI development and Figma-to-Flutter workflows.
+A Flutter storefront app for a bakery — browsing, product details, cart, checkout,
+and store locator — rebuilt on **Material 3 Expressive** with a custom dusty-berry
+palette and full light/dark support.
 
-## Demo images
+## Screenshots
 
-![Demo](https://raw.githubusercontent.com/ales-dev-studio/Flutter-Sweet-Shop-App-UI/refs/heads/main/assets/demos/demo-1.png)
-![Demo](https://raw.githubusercontent.com/ales-dev-studio/Flutter-Sweet-Shop-App-UI/refs/heads/main/assets/demos/demo-2.png)
-![Demo](https://raw.githubusercontent.com/ales-dev-studio/Flutter-Sweet-Shop-App-UI/refs/heads/main/assets/demos/demo-3.png)
-![Demo](https://raw.githubusercontent.com/ales-dev-studio/Flutter-Sweet-Shop-App-UI/refs/heads/main/assets/demos/demo-4.png)
+_Coming soon — the UI was rebuilt and the previous screenshots no longer match._
+
+<!--
+Drop captures into assets/demos/ and reference them with relative paths:
+![Home](assets/demos/home.png)
+-->
+
+## The redesign
+
+The app was reworked from the ground up onto Material 3 Expressive:
+
+- **Token-driven theme system** — `app_color_scheme`, `app_typography`, `app_shapes`,
+  `app_motion` and `app_semantics` replace the previous flat colour and text constants,
+  so the entire app re-themes from one seed colour.
+- **Dusty-berry palette** seeded from `#A8536B`, with hand-tuned surface ramps for both
+  light (`#FFF8F5`) and dark (`#1A1113`) rather than relying on generated defaults alone.
+- **Navigation migrated to `go_router`** — declarative routes and a shell-based tab
+  layout, replacing imperative navigator calls.
+- **Every widget rebuilt** against the new tokens: buttons, chips, list tiles, search
+  bar, app bars, dividers, rating and map widgets.
+- **iOS project modernised** to a minimum of iOS 13 with the UIScene lifecycle.
 
 ## Features
-Custom Theme System (Colors, Typography, Dimensions)
 
-Responsive Layouts for all screen sizes
+- Product browsing with categories, sorting and filtering
+- Product details with expandable descriptions and ratings
+- Cart, address selection, payment methods and checkout flow
+- Special offers and a promotional banner carousel
+- Store locator built on `flutter_map`
+- Light and dark themes
 
-State Management with Cubit
+## Tech stack
 
-Interactive UI Elements:
+- **Flutter** with a feature-first structure (`core/` + `features/`, each split into
+  `data/` and `presentation/`)
+- **State management** — `bloc` / `flutter_bloc` (Cubit)
+- **Routing** — `go_router`
+- **UI** — `material_symbols_icons`, `google_fonts`, `animations`, `flutter_svg`,
+  `readmore`, `dotted_border`
+- **Assets** — `flutter_gen` for type-safe asset references
+- **Maps** — `flutter_map`
 
-  Carousel sliders for promotions
-  
-  Animated bottom navigation bar
-  
-  Custom AppBar with search functionality
+## Getting started
 
+```bash
+git clone https://github.com/ni24rgwork-max/sweet-shop.git
+cd sweet-shop
+flutter pub get
+flutter run
+```
 
-## Tech Stack  
-- **Flutter**
-- **Packages**:  
-  - `flutter_bloc` for navigation
-  - `flutter_svg` for vector assets  
-  - `flutter_gen` for asset management  
+Requires a recent Flutter SDK with Material 3 support.
 
-## Getting Started  
-1. Clone the repository  
-   ```bash
-   git clone https://github.com/ales-dev-studio/Flutter-Sweet-Shop-App-UI.git
-   ```
-2. Install dependencies  
-   ```bash
-   flutter pub get
-   ```
-3. Run the app  
-   ```bash
-   flutter run
-   ```
+## Credits
 
-## 📚 Resources  
-- [YouTube playlist](https://youtube.com/playlist?list=PLFecs-ae_8FG8O_y6zSL9muONH-iC5kYH&si=pwhuw0HfssxorQ9A)
-- [Figma Design](https://www.figma.com/design/kgbuMUCvaYoMXLRjDxkZ6s/Sweet-Craze?node-id=1-2&t=ynInnRvFPLgl3VuP-1)  
-- [Flutter Documentation](https://flutter.dev)  
-- [Cubit State Management](https://bloclibrary.dev/)  
-
-## 🤝 Contributing  
-Pull requests are welcome!
+The original Sweet Shop UI base is by
+[ales-dev-studio](https://github.com/ales-dev-studio/Flutter-Sweet-Shop-App-UI),
+from the [Sweet Craze](https://www.figma.com/design/kgbuMUCvaYoMXLRjDxkZ6s/Sweet-Craze?node-id=1-2&t=ynInnRvFPLgl3VuP-1)
+Figma design. The Material 3 Expressive redesign, theming system, routing migration
+and platform updates in this repository are my own work.
