@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_sweet_shop_app_ui/features/cart_feature/data/models/cart_item_model.dart';
-import 'package:flutter_sweet_shop_app_ui/features/cart_feature/data/models/product_model.dart';
+import 'package:sweet_shop/features/cart_feature/data/models/cart_item_model.dart';
+import 'package:sweet_shop/features/cart_feature/data/models/product_model.dart';
 
 part 'cart_state.dart';
 

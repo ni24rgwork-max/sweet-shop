@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sweet_shop_app_ui/core/utils/sized_context.dart';
+import 'package:sweet_shop/core/utils/sized_context.dart';
 import '../theme/dimens.dart';
 
 bool checkDesktopSize(final BuildContext context) {

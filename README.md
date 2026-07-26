@@ -4,15 +4,6 @@ A Flutter storefront app for a bakery — browsing, product details, cart, check
 and store locator — rebuilt on **Material 3 Expressive** with a custom dusty-berry
 palette and full light/dark support.
 
-## Screenshots
-
-_Coming soon — the UI was rebuilt and the previous screenshots no longer match._
-
-<!--
-Drop captures into assets/demos/ and reference them with relative paths:
-![Home](assets/demos/home.png)
--->
-
 ## The redesign
 
 The app was reworked from the ground up onto Material 3 Expressive:
@@ -58,4 +49,26 @@ flutter run
 ```
 
 Requires a recent Flutter SDK with Material 3 support.
+
+## Tests
+
+```bash
+flutter test      # 26 tests
+flutter analyze   # 0 issues
+```
+
+Twenty-six tests across two suites:
+
+- **Cart** — line collapsing on repeated adds, quantity increment and decrement,
+  removal when a line reaches zero, total amount and item count, and no-ops for
+  unknown product ids.
+- **Theme** — both schemes derive from the one seed, the light surface containers
+  darken monotonically as they ascend, body text clears WCAG AA contrast against
+  its own surface in both brightnesses, the radius scale ascends, `effects` springs
+  are critically damped while `spatial` springs are not, and `AppSemantics`
+  interpolates and copies correctly.
+
+The damping assertions are the interesting ones: they encode the design rule that
+colour and opacity must never overshoot, so a future change to the motion tokens
+that breaks it fails the build rather than shipping as a visual glitch.
 

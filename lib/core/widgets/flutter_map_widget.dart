@@ -35,7 +35,7 @@ class FlutterMapWidget extends StatelessWidget {
       children: <Widget>[
         TileLayer(
           urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-          userAgentPackageName: 'com.sweet.shop.flutter_sweet_shop_app_ui',
+          userAgentPackageName: 'com.sweet.shop',
         ),
         MarkerLayer(
           markers: <Marker>[

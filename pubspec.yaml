@@ -1,4 +1,4 @@
-name: flutter_sweet_shop_app_ui
+name: sweet_shop
 description: "A bakery storefront app built with Flutter and Material 3 Expressive."
 
 publish_to: 'none'
