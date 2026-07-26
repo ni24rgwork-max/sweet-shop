@@ -59,10 +59,3 @@ flutter run
 
 Requires a recent Flutter SDK with Material 3 support.
 
-## Credits
-
-The original Sweet Shop UI base is by
-[ales-dev-studio](https://github.com/ales-dev-studio/Flutter-Sweet-Shop-App-UI),
-from the [Sweet Craze](https://www.figma.com/design/kgbuMUCvaYoMXLRjDxkZ6s/Sweet-Craze?node-id=1-2&t=ynInnRvFPLgl3VuP-1)
-Figma design. The Material 3 Expressive redesign, theming system, routing migration
-and platform updates in this repository are my own work.
