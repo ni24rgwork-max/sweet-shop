@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.sweet.shop.flutter_sweet_shop_app_ui"
+    namespace = "com.sweetshop.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -21,7 +21,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.sweet.shop.flutter_sweet_shop_app_ui"
+        applicationId = "com.sweetshop.app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion

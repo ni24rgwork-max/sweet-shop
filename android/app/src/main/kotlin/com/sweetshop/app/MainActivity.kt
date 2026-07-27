@@ -1,4 +1,4 @@
-package com.sweet.shop.flutter_sweet_shop_app_ui
+package com.sweetshop.app
 
 import io.flutter.embedding.android.FlutterActivity
 
