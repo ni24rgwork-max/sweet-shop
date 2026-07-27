@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/dimens.dart';
 import '../../../../core/theme/theme.dart';
-import '../../../../core/widgets/app_svg_viewer.dart';
 
 /// A selectable payment method.
 ///
@@ -16,7 +15,6 @@ class PaymentItemWidget extends StatelessWidget {
     this.value,
     this.onTap,
     this.icon,
-    this.logoPath,
     this.showBorder = true,
     this.showRadio = true,
     this.selected = false,
@@ -29,7 +27,6 @@ class PaymentItemWidget extends StatelessWidget {
 
   final VoidCallback? onTap;
   final IconData? icon;
-  final String? logoPath;
   final bool showBorder;
   final bool showRadio;
   final bool selected;
@@ -59,7 +56,7 @@ class PaymentItemWidget extends StatelessWidget {
           ),
           child: Row(
             children: <Widget>[
-              if (icon != null || logoPath != null) ...<Widget>[
+              if (icon != null) ...<Widget>[
                 Container(
                   width: 40,
                   height: 40,
@@ -68,11 +65,7 @@ class PaymentItemWidget extends StatelessWidget {
                     borderRadius: AppShapes.radiusSm,
                   ),
                   child: Center(
-                    // Brand marks keep their own colours; generic payment
-                    // icons take the surface foreground.
-                    child: icon != null
-                        ? Icon(icon, size: 20, color: colors.onSurface)
-                        : AppSvgViewer(logoPath!, width: 20, color: null),
+                    child: Icon(icon, size: 20, color: colors.onSurface),
                   ),
                 ),
                 const SizedBox(width: Dimens.mediumPadding),

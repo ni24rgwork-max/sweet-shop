@@ -50,7 +50,7 @@ class CategoriesScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               AppTitleWidget(
-                thumbnailPath: imagesOfCategories[category],
+                thumbnail: iconsOfCategories[category],
                 title: titlesOfCategories[category],
                 onPressed: () => context.push(Routes.products),
               ),

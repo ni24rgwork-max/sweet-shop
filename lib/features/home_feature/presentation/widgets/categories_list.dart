@@ -58,7 +58,13 @@ class _CategoriesListState extends State<CategoriesList> {
                         width: 1.5,
                       ),
                     ),
-                    child: Image.asset(imagesOfCategories[index]),
+                    child: Icon(
+                      iconsOfCategories[index],
+                      size: 34,
+                      color: selected
+                          ? colors.onSecondaryContainer
+                          : colors.onSurfaceVariant,
+                    ),
                   ),
                   const SizedBox(height: Dimens.padding),
                   Text(

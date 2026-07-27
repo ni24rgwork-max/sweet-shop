@@ -72,3 +72,10 @@ The damping assertions are the interesting ones: they encode the design rule tha
 colour and opacity must never overshoot, so a future change to the motion tokens
 that breaks it fails the build rather than shipping as a visual glitch.
 
+
+## Licence
+
+MIT — see [LICENSE](LICENSE).
+
+Bundled artwork is either originated for this project or sourced under CC0 /
+Public Domain Mark; see [CREDITS.md](CREDITS.md) for the per-file record.

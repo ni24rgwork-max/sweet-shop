@@ -11,22 +11,6 @@
 
 import 'package:flutter/widgets.dart';
 
-class $AssetsIconsGen {
-  const $AssetsIconsGen();
-
-  /// File path: assets/icons/apple-logo.svg
-  String get appleLogo => 'assets/icons/apple-logo.svg';
-
-  /// File path: assets/icons/google-logo.svg
-  String get googleLogo => 'assets/icons/google-logo.svg';
-
-  /// File path: assets/icons/paypal-logo.svg
-  String get paypalLogo => 'assets/icons/paypal-logo.svg';
-
-  /// List of all assets
-  List<String> get values => [appleLogo, googleLogo, paypalLogo];
-}
-
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
@@ -58,10 +42,6 @@ class $AssetsImagesGen {
   AssetGenImage get birthdayCakeCategory3 =>
       const AssetGenImage('assets/images/birthday cake category 3.png');
 
-  /// File path: assets/images/cake illustration.png
-  AssetGenImage get cakeIllustration =>
-      const AssetGenImage('assets/images/cake illustration.png');
-
   /// File path: assets/images/cupcake category 1.png
   AssetGenImage get cupcakeCategory1 =>
       const AssetGenImage('assets/images/cupcake category 1.png');
@@ -73,10 +53,6 @@ class $AssetsImagesGen {
   /// File path: assets/images/cupcake category 3.png
   AssetGenImage get cupcakeCategory3 =>
       const AssetGenImage('assets/images/cupcake category 3.png');
-
-  /// File path: assets/images/cupcake illustration.png
-  AssetGenImage get cupcakeIllustration =>
-      const AssetGenImage('assets/images/cupcake illustration.png');
 
   /// File path: assets/images/donut category 1.png
   AssetGenImage get donutCategory1 =>
@@ -90,10 +66,6 @@ class $AssetsImagesGen {
   AssetGenImage get donutCategory3 =>
       const AssetGenImage('assets/images/donut category 3.png');
 
-  /// File path: assets/images/donut illustration.png
-  AssetGenImage get donutIllustration =>
-      const AssetGenImage('assets/images/donut illustration.png');
-
   /// File path: assets/images/logo.png
   AssetGenImage get logo => const AssetGenImage('assets/images/logo.png');
 
@@ -104,10 +76,6 @@ class $AssetsImagesGen {
   /// File path: assets/images/map-img-2.png
   AssetGenImage get mapImg2 =>
       const AssetGenImage('assets/images/map-img-2.png');
-
-  /// File path: assets/images/pastry illustration.png
-  AssetGenImage get pastryIllustration =>
-      const AssetGenImage('assets/images/pastry illustration.png');
 
   /// File path: assets/images/profile-image.png
   AssetGenImage get profileImage =>
@@ -130,19 +98,15 @@ class $AssetsImagesGen {
     birthdayCakeCategory1,
     birthdayCakeCategory2,
     birthdayCakeCategory3,
-    cakeIllustration,
     cupcakeCategory1,
     cupcakeCategory2,
     cupcakeCategory3,
-    cupcakeIllustration,
     donutCategory1,
     donutCategory2,
     donutCategory3,
-    donutIllustration,
     logo,
     mapImg1,
     mapImg2,
-    pastryIllustration,
     profileImage,
     redVelvetCakeWithFruit,
     strawberryChocolateCake,
@@ -150,7 +114,6 @@ class $AssetsImagesGen {
 }
 
 abstract final class Assets {
-  static const $AssetsIconsGen icons = $AssetsIconsGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
 }
 

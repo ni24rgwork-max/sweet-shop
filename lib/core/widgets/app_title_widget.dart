@@ -13,12 +13,12 @@ class AppTitleWidget extends StatelessWidget {
   const AppTitleWidget({
     required this.title,
     super.key,
-    this.thumbnailPath,
+    this.thumbnail,
     this.onPressed,
   });
 
   final String title;
-  final String? thumbnailPath;
+  final IconData? thumbnail;
   final VoidCallback? onPressed;
 
   @override
@@ -35,8 +35,8 @@ class AppTitleWidget extends StatelessWidget {
             child: Row(
               spacing: Dimens.mediumPadding,
               children: <Widget>[
-                if (thumbnailPath != null)
-                  Image.asset(thumbnailPath!, width: 30, height: 30),
+                if (thumbnail != null)
+                  Icon(thumbnail, size: 26, color: context.colors.primary),
                 Expanded(
                   child: Text(
                     title,

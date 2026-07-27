@@ -1,3 +1,6 @@
+import 'package:flutter/widgets.dart';
+import 'package:material_symbols_icons/symbols.dart';
+
 import '../../../../../core/gen/assets.gen.dart';
 
 /// Placeholder catalogue content for the local data source.
@@ -14,16 +17,19 @@ final List<String> banners = [
   Assets.images.specialOffer4.path,
 ];
 
-/// Category tiles, paired positionally with [titlesOfCategories].
-final List<String> imagesOfCategories = [
-  Assets.images.cupcakeIllustration.path,
-  Assets.images.donutIllustration.path,
-  Assets.images.cakeIllustration.path,
-  Assets.images.pastryIllustration.path,
-  Assets.images.cupcakeIllustration.path,
-  Assets.images.donutIllustration.path,
-  Assets.images.cakeIllustration.path,
-  Assets.images.pastryIllustration.path,
+/// Category glyphs, paired positionally with [titlesOfCategories].
+///
+/// Drawn from the icon font rather than bundled artwork so they inherit the
+/// theme's colour and stay visually consistent with the rest of the app.
+const List<IconData> iconsOfCategories = <IconData>[
+  Symbols.cake,
+  Symbols.donut_small,
+  Symbols.celebration,
+  Symbols.bakery_dining,
+  Symbols.cookie,
+  Symbols.cookie,
+  Symbols.cake,
+  Symbols.breakfast_dining,
 ];
 
 final List<String> titlesOfCategories = [

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/gen/assets.gen.dart';
 import '../../../../core/theme/dimens.dart';
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/general_app_bar.dart';
@@ -71,7 +70,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
             PaymentItemWidget(
               title: 'PayPal',
               value: 'paypal',
-              logoPath: Assets.icons.paypalLogo,
+              icon: Symbols.account_balance,
               selected: _method == 'paypal',
               onTap: () => setState(() => _method = 'paypal'),
             ),
@@ -79,7 +78,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
             PaymentItemWidget(
               title: 'Apple Pay',
               value: 'apple',
-              logoPath: Assets.icons.appleLogo,
+              icon: Symbols.phone_iphone,
               selected: _method == 'apple',
               onTap: () => setState(() => _method = 'apple'),
             ),
@@ -87,7 +86,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
             PaymentItemWidget(
               title: 'Google Pay',
               value: 'google',
-              logoPath: Assets.icons.googleLogo,
+              icon: Symbols.wallet,
               selected: _method == 'google',
               onTap: () => setState(() => _method = 'google'),
             ),
