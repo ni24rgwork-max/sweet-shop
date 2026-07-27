@@ -30,6 +30,9 @@ class RateWidget extends StatelessWidget {
       children: <Widget>[
         Icon(
           Symbols.star,
+          // Material Symbols ship unfilled by default; the rating star was a
+          // solid glyph before the icon-font swap.
+          fill: 1,
           color: context.semantics.rating,
           size: 14,
         ),
