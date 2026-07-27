@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../theme/dimens.dart';
 import '../theme/theme.dart';
-import 'app_svg_viewer.dart';
 
 /// Low-emphasis action — "See all", inline links.
 class AppTextButton extends StatelessWidget {
@@ -12,14 +11,14 @@ class AppTextButton extends StatelessWidget {
     this.title,
     this.child,
     this.color,
-    this.iconPath,
+    this.icon,
   });
 
   final String? title;
   final Widget? child;
   final VoidCallback? onPressed;
   final Color? color;
-  final String? iconPath;
+  final IconData? icon;
 
   @override
   Widget build(BuildContext context) {
@@ -43,8 +42,8 @@ class AppTextButton extends StatelessWidget {
             spacing: Dimens.smallPadding,
             children: <Widget>[
               Text(title ?? ''),
-              if (iconPath != null)
-                AppSvgViewer(iconPath!, color: foreground, width: 15),
+              if (icon != null)
+                Icon(icon, color: foreground, size: 15),
             ],
           ),
     );

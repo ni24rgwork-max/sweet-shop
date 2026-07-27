@@ -17,130 +17,14 @@ class $AssetsIconsGen {
   /// File path: assets/icons/apple-logo.svg
   String get appleLogo => 'assets/icons/apple-logo.svg';
 
-  /// File path: assets/icons/arrow-left.svg
-  String get arrowLeft => 'assets/icons/arrow-left.svg';
-
-  /// File path: assets/icons/arrow-right-1.svg
-  String get arrowRight1 => 'assets/icons/arrow-right-1.svg';
-
-  /// File path: assets/icons/arrow-right4.svg
-  String get arrowRight4 => 'assets/icons/arrow-right4.svg';
-
-  /// File path: assets/icons/call.svg
-  String get call => 'assets/icons/call.svg';
-
-  /// File path: assets/icons/card-pos.svg
-  String get cardPos => 'assets/icons/card-pos.svg';
-
-  /// File path: assets/icons/card.svg
-  String get card => 'assets/icons/card.svg';
-
-  /// File path: assets/icons/clock.svg
-  String get clock => 'assets/icons/clock.svg';
-
-  /// File path: assets/icons/edit.svg
-  String get edit => 'assets/icons/edit.svg';
-
-  /// File path: assets/icons/filter-search.svg
-  String get filterSearch => 'assets/icons/filter-search.svg';
-
   /// File path: assets/icons/google-logo.svg
   String get googleLogo => 'assets/icons/google-logo.svg';
-
-  /// File path: assets/icons/heart.svg
-  String get heart => 'assets/icons/heart.svg';
-
-  /// File path: assets/icons/home-2.svg
-  String get home2 => 'assets/icons/home-2.svg';
-
-  /// File path: assets/icons/info-circle.svg
-  String get infoCircle => 'assets/icons/info-circle.svg';
-
-  /// File path: assets/icons/language-square.svg
-  String get languageSquare => 'assets/icons/language-square.svg';
-
-  /// File path: assets/icons/location.svg
-  String get location => 'assets/icons/location.svg';
-
-  /// File path: assets/icons/logout.svg
-  String get logout => 'assets/icons/logout.svg';
-
-  /// File path: assets/icons/map-1.svg
-  String get map1 => 'assets/icons/map-1.svg';
-
-  /// File path: assets/icons/money-3.svg
-  String get money3 => 'assets/icons/money-3.svg';
-
-  /// File path: assets/icons/moon.svg
-  String get moon => 'assets/icons/moon.svg';
-
-  /// File path: assets/icons/note-text.svg
-  String get noteText => 'assets/icons/note-text.svg';
-
-  /// File path: assets/icons/notification.svg
-  String get notification => 'assets/icons/notification.svg';
 
   /// File path: assets/icons/paypal-logo.svg
   String get paypalLogo => 'assets/icons/paypal-logo.svg';
 
-  /// File path: assets/icons/receipt.svg
-  String get receipt => 'assets/icons/receipt.svg';
-
-  /// File path: assets/icons/search-normal-1.svg
-  String get searchNormal1 => 'assets/icons/search-normal-1.svg';
-
-  /// File path: assets/icons/shopping-cart.svg
-  String get shoppingCart => 'assets/icons/shopping-cart.svg';
-
-  /// File path: assets/icons/sort.svg
-  String get sort => 'assets/icons/sort.svg';
-
-  /// File path: assets/icons/star_filled.svg
-  String get starFilled => 'assets/icons/star_filled.svg';
-
-  /// File path: assets/icons/trash.svg
-  String get trash => 'assets/icons/trash.svg';
-
-  /// File path: assets/icons/user.svg
-  String get user => 'assets/icons/user.svg';
-
-  /// File path: assets/icons/wallet.svg
-  String get wallet => 'assets/icons/wallet.svg';
-
   /// List of all assets
-  List<String> get values => [
-    appleLogo,
-    arrowLeft,
-    arrowRight1,
-    arrowRight4,
-    call,
-    cardPos,
-    card,
-    clock,
-    edit,
-    filterSearch,
-    googleLogo,
-    heart,
-    home2,
-    infoCircle,
-    languageSquare,
-    location,
-    logout,
-    map1,
-    money3,
-    moon,
-    noteText,
-    notification,
-    paypalLogo,
-    receipt,
-    searchNormal1,
-    shoppingCart,
-    sort,
-    starFilled,
-    trash,
-    user,
-    wallet,
-  ];
+  List<String> get values => [appleLogo, googleLogo, paypalLogo];
 }
 
 class $AssetsImagesGen {

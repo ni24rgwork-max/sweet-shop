@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../core/gen/assets.gen.dart';
 import '../../../../../core/theme/dimens.dart';
 import '../../../../../core/theme/theme.dart';
 import '../../../../../core/widgets/app_list_tile.dart';
-import '../../../../../core/widgets/app_svg_viewer.dart';
 import '../../../../../core/widgets/general_app_bar.dart';
 import '../../../../../core/widgets/user_profile_image_widget.dart';
 import '../../bloc/theme_cubit.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 /// Profile and settings.
 ///
@@ -43,25 +42,25 @@ class ProfileTab extends StatelessWidget {
               AppListTile(
                 onTap: () {},
                 title: 'Payment methods',
-                leadingIconPath: Assets.icons.cardPos,
+                leadingIcon: Symbols.point_of_sale,
                 padding: EdgeInsets.zero,
               ),
               AppListTile(
                 onTap: () {},
                 title: 'Addresses',
-                leadingIconPath: Assets.icons.location,
+                leadingIcon: Symbols.location_on,
                 padding: EdgeInsets.zero,
               ),
               AppListTile(
                 onTap: () {},
                 title: 'Language',
-                leadingIconPath: Assets.icons.languageSquare,
+                leadingIcon: Symbols.language,
                 padding: EdgeInsets.zero,
               ),
               AppListTile(
                 onTap: () {},
                 title: 'Notifications',
-                leadingIconPath: Assets.icons.notification,
+                leadingIcon: Symbols.notifications,
                 padding: EdgeInsets.zero,
                 trailing: Switch(value: true, onChanged: (_) {}),
               ),
@@ -70,7 +69,7 @@ class ProfileTab extends StatelessWidget {
                   isCurrentlyDark: isDark,
                 ),
                 title: 'Dark theme',
-                leadingIconPath: Assets.icons.moon,
+                leadingIcon: Symbols.dark_mode,
                 padding: EdgeInsets.zero,
                 trailing: Switch(
                   value: isDark,
@@ -89,13 +88,13 @@ class ProfileTab extends StatelessWidget {
               AppListTile(
                 onTap: () {},
                 title: 'Feedback',
-                leadingIconPath: Assets.icons.noteText,
+                leadingIcon: Symbols.description,
                 padding: EdgeInsets.zero,
               ),
               AppListTile(
                 onTap: () {},
                 title: 'Help and support',
-                leadingIconPath: Assets.icons.infoCircle,
+                leadingIcon: Symbols.info,
                 padding: EdgeInsets.zero,
               ),
             ],
@@ -107,7 +106,7 @@ class ProfileTab extends StatelessWidget {
               AppListTile(
                 onTap: () {},
                 title: 'Log out',
-                leadingIconPath: Assets.icons.logout,
+                leadingIcon: Symbols.logout,
                 padding: EdgeInsets.zero,
                 destructive: true,
                 trailing: const SizedBox.shrink(),
@@ -166,9 +165,9 @@ class _ProfileCard extends StatelessWidget {
               backgroundColor: colors.surfaceContainerHigh,
               shape: AppShapes.pill,
             ),
-            icon: AppSvgViewer(
-              Assets.icons.edit,
-              width: 18,
+            icon: Icon(
+              Symbols.edit,
+              size: 18,
               color: colors.onSurfaceVariant,
             ),
           ),

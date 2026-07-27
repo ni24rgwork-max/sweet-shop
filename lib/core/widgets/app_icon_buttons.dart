@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../theme/theme.dart';
-import 'app_svg_viewer.dart';
 
 /// Circular filled icon button — quantity steppers, add-to-cart, overlay actions.
 class AppIconButton extends StatelessWidget {
   const AppIconButton({
-    required this.iconPath,
+    required this.icon,
     super.key,
     this.onPressed,
     this.iconColor,
@@ -14,7 +13,7 @@ class AppIconButton extends StatelessWidget {
     this.size = 40,
   });
 
-  final String iconPath;
+  final IconData icon;
   final VoidCallback? onPressed;
   final Color? iconColor;
   final Color? backgroundColor;
@@ -33,9 +32,9 @@ class AppIconButton extends StatelessWidget {
           backgroundColor: backgroundColor ?? colors.secondaryContainer,
           padding: EdgeInsets.zero,
         ),
-        icon: AppSvgViewer(
-          iconPath,
-          width: size * 0.45,
+        icon: Icon(
+          icon,
+          size: size * 0.45,
           color: iconColor ?? colors.onSecondaryContainer,
         ),
       ),

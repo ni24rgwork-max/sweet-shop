@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../gen/assets.gen.dart';
 import '../theme/dimens.dart';
 import '../theme/theme.dart';
-import 'app_svg_viewer.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 /// Search entry point.
 ///
@@ -23,9 +22,9 @@ class AppSearchBar extends StatelessWidget {
       barHintText: 'Search cakes, pastries, cheesecakes',
       barLeading: Padding(
         padding: const EdgeInsets.only(right: Dimens.smallPadding),
-        child: AppSvgViewer(
-          Assets.icons.searchNormal1,
-          width: 20,
+        child: Icon(
+          Symbols.search,
+          size: 20,
           color: colors.onSurfaceVariant,
         ),
       ),
@@ -54,7 +53,7 @@ class AppSearchBar extends StatelessWidget {
 
         return matches.map((String item) {
           return ListTile(
-            leading: AppSvgViewer(Assets.icons.searchNormal1, width: 18),
+            leading: Icon(Symbols.search, size: 18),
             title: Text(item, style: context.text.bodyLarge),
             onTap: () => controller.closeView(item),
           );

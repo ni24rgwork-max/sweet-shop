@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../gen/assets.gen.dart';
 import '../theme/dimens.dart';
 import '../theme/theme.dart';
-import 'app_svg_viewer.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 /// Star rating.
 ///
@@ -29,10 +28,10 @@ class RateWidget extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       spacing: Dimens.smallPadding,
       children: <Widget>[
-        AppSvgViewer(
-          Assets.icons.starFilled,
+        Icon(
+          Symbols.star,
           color: context.semantics.rating,
-          width: 14,
+          size: 14,
         ),
         Text(
           rate,

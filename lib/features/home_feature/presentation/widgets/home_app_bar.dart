@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/gen/assets.gen.dart';
 import '../../../../core/theme/dimens.dart';
 import '../../../../core/theme/theme.dart';
-import '../../../../core/widgets/app_svg_viewer.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 /// Top of the home tab.
 ///
@@ -37,9 +36,9 @@ class HomeHeader extends StatelessWidget {
       titleSpacing: Dimens.gutter,
       title: Row(
         children: <Widget>[
-          AppSvgViewer(
-            Assets.icons.location,
-            width: 16,
+          Icon(
+            Symbols.location_on,
+            size: 16,
             color: colors.primary,
           ),
           const SizedBox(width: Dimens.smallPadding),
@@ -100,9 +99,9 @@ class _NotificationButton extends StatelessWidget {
             backgroundColor: colors.surfaceContainer,
             shape: AppShapes.pill,
           ),
-          icon: AppSvgViewer(
-            Assets.icons.notification,
-            width: 20,
+          icon: Icon(
+            Symbols.notifications,
+            size: 20,
             color: colors.onSurface,
           ),
         ),

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../gen/assets.gen.dart';
 import '../theme/dimens.dart';
 import '../theme/theme.dart';
-import 'app_svg_viewer.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 /// Settings-style row, used down the profile tab.
 ///
@@ -13,7 +12,7 @@ class AppListTile extends StatelessWidget {
   const AppListTile({
     required this.onTap,
     required this.title,
-    required this.leadingIconPath,
+    required this.leadingIcon,
     super.key,
     this.trailing,
     this.padding,
@@ -22,7 +21,7 @@ class AppListTile extends StatelessWidget {
 
   final VoidCallback onTap;
   final String title;
-  final String leadingIconPath;
+  final IconData leadingIcon;
   final Widget? trailing;
   final EdgeInsetsGeometry? padding;
 
@@ -57,18 +56,18 @@ class AppListTile extends StatelessWidget {
             borderRadius: AppShapes.radiusSm,
           ),
           child: Center(
-            child: AppSvgViewer(
-              leadingIconPath,
-              width: 19,
+            child: Icon(
+              leadingIcon,
+              size: 19,
               color: destructive ? colors.onErrorContainer : foreground,
             ),
           ),
         ),
         trailing:
             trailing ??
-            AppSvgViewer(
-              Assets.icons.arrowRight4,
-              width: 15,
+            Icon(
+              Symbols.chevron_right,
+              size: 15,
               color: colors.onSurfaceVariant,
             ),
       ),

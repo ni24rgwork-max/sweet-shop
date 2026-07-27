@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/gen/assets.gen.dart';
 import '../../../core/theme/dimens.dart';
 import '../../../core/theme/theme.dart';
-import '../../../core/widgets/app_svg_viewer.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 /// Nearby store cards that float over the map.
 ///
@@ -92,10 +92,10 @@ class _StoreCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: Dimens.padding),
-                _MetaRow(iconPath: Assets.icons.location, text: store.address),
+                _MetaRow(icon: Symbols.location_on, text: store.address),
                 const SizedBox(height: Dimens.smallPadding),
                 _MetaRow(
-                  iconPath: Assets.icons.clock,
+                  icon: Symbols.schedule,
                   text: '${store.distance} · free delivery',
                 ),
               ],
@@ -108,9 +108,9 @@ class _StoreCard extends StatelessWidget {
 }
 
 class _MetaRow extends StatelessWidget {
-  const _MetaRow({required this.iconPath, required this.text});
+  const _MetaRow({required this.icon, required this.text});
 
-  final String iconPath;
+  final IconData icon;
   final String text;
 
   @override
@@ -119,7 +119,7 @@ class _MetaRow extends StatelessWidget {
 
     return Row(
       children: <Widget>[
-        AppSvgViewer(iconPath, width: 13, color: colors.primary),
+        Icon(icon, size: 13, color: colors.primary),
         const SizedBox(width: Dimens.smallPadding),
         Expanded(
           child: Text(

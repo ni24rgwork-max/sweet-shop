@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/gen/assets.gen.dart';
 import '../../../../core/theme/dimens.dart';
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/app_search_bar.dart';
-import '../../../../core/widgets/app_svg_viewer.dart';
 import '../../../../core/widgets/general_app_bar.dart';
 import '../../../cart_feature/data/data_source/local/fake_products.dart';
 import '../../../cart_feature/data/models/product_model.dart';
 import '../widgets/product_card.dart';
 import 'sort_and_filter_screen.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 /// Full product grid.
 ///
@@ -94,13 +93,13 @@ class _ProductsScreenState extends State<ProductsScreen> {
                 children: <Widget>[
                   _ControlChip(
                     label: _filters.sort.label,
-                    iconPath: Assets.icons.sort,
+                    icon: Symbols.sort,
                     onTap: _openSheet,
                   ),
                   const SizedBox(width: Dimens.padding),
                   _ControlChip(
                     label: _filters.category,
-                    iconPath: Assets.icons.filterSearch,
+                    icon: Symbols.tune,
                     onTap: _openSheet,
                   ),
                   const Spacer(),
@@ -166,12 +165,12 @@ class _ProductsScreenState extends State<ProductsScreen> {
 class _ControlChip extends StatelessWidget {
   const _ControlChip({
     required this.label,
-    required this.iconPath,
+    required this.icon,
     required this.onTap,
   });
 
   final String label;
-  final String iconPath;
+  final IconData icon;
   final VoidCallback onTap;
 
   @override
@@ -192,7 +191,7 @@ class _ControlChip extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              AppSvgViewer(iconPath, width: 15, color: colors.onSurfaceVariant),
+              Icon(icon, size: 15, color: colors.onSurfaceVariant),
               const SizedBox(width: Dimens.smallPadding),
               Text(label, style: context.text.labelMedium),
             ],

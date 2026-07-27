@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../theme/dimens.dart';
 import '../theme/theme.dart';
-import 'app_svg_viewer.dart';
 
 /// Primary call-to-action.
 ///
@@ -14,7 +13,7 @@ class AppButton extends StatelessWidget {
     required this.title,
     required this.onPressed,
     super.key,
-    this.iconPath,
+    this.icon,
     this.margin,
     this.tonal = false,
     this.expand = true,
@@ -22,7 +21,7 @@ class AppButton extends StatelessWidget {
 
   final String title;
   final VoidCallback? onPressed;
-  final String? iconPath;
+  final IconData? icon;
   final EdgeInsets? margin;
 
   /// Secondary emphasis — filled with `secondaryContainer` instead of `primary`.
@@ -42,8 +41,8 @@ class AppButton extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        if (iconPath != null) ...<Widget>[
-          AppSvgViewer(iconPath!, width: 20, color: foreground),
+        if (icon != null) ...<Widget>[
+          Icon(icon, size: 20, color: foreground),
           const SizedBox(width: Dimens.mediumPadding),
         ],
         Text(title),

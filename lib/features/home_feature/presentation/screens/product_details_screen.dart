@@ -9,7 +9,6 @@ import '../../../../core/widgets/app_bordered_icon_button.dart';
 import '../../../../core/widgets/app_choice_chip.dart';
 import '../../../../core/widgets/app_icon_buttons.dart';
 import '../../../../core/widgets/app_read_more_text.dart';
-import '../../../../core/widgets/app_svg_viewer.dart';
 import '../../../../core/widgets/rate_widget.dart';
 import '../../../cart_feature/data/data_source/local/fake_products.dart';
 import '../../../cart_feature/data/models/product_model.dart';
@@ -17,6 +16,7 @@ import '../../../cart_feature/presentation/bloc/cart_cubit.dart';
 import '../../data/data_source/local/sample_data.dart';
 import '../../data/product_details_args.dart';
 import '../widgets/user_profile_image.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 /// Product details.
 ///
@@ -135,7 +135,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       ),
                     ),
                     trailing: AppIconButton(
-                      iconPath: Assets.icons.call,
+                      icon: Symbols.call,
                       onPressed: () {},
                     ),
                   ),
@@ -180,7 +180,7 @@ class _PhotoHeader extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.only(left: Dimens.gutter),
           child: AppBorderedIconButton(
-            iconPath: Assets.icons.arrowLeft,
+            icon: Symbols.arrow_back,
             onPressed: () => context.pop(),
           ),
         ),
@@ -188,7 +188,7 @@ class _PhotoHeader extends StatelessWidget {
       actions: <Widget>[
         Center(
           child: AppBorderedIconButton(
-            iconPath: Assets.icons.heart,
+            icon: Symbols.favorite,
             onPressed: () {},
           ),
         ),
@@ -279,9 +279,9 @@ class _CheckoutBar extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    AppSvgViewer(
-                      Assets.icons.shoppingCart,
-                      width: 20,
+                    Icon(
+                      Symbols.shopping_cart,
+                      size: 20,
                       color: colors.onPrimary,
                     ),
                     const SizedBox(width: Dimens.mediumPadding),

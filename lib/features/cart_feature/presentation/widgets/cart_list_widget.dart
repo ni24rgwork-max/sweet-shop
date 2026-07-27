@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/gen/assets.gen.dart';
 import '../../../../core/theme/dimens.dart';
 import '../../../../core/theme/theme.dart';
-import '../../../../core/widgets/app_svg_viewer.dart';
 import '../../data/models/cart_item_model.dart';
 import '../bloc/cart_cubit.dart';
 import 'cart_actions.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 /// Cart line items, each swipeable to remove.
 ///
@@ -46,9 +45,9 @@ class CartListWidget extends StatelessWidget {
               color: colors.errorContainer,
               borderRadius: AppShapes.radiusXl,
             ),
-            child: AppSvgViewer(
-              Assets.icons.trash,
-              width: 24,
+            child: Icon(
+              Symbols.delete,
+              size: 24,
               color: colors.onErrorContainer,
             ),
           ),

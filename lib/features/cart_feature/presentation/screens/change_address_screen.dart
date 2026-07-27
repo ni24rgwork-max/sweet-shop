@@ -2,11 +2,10 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/gen/assets.gen.dart';
 import '../../../../core/theme/dimens.dart';
 import '../../../../core/theme/theme.dart';
-import '../../../../core/widgets/app_svg_viewer.dart';
 import '../../../../core/widgets/general_app_bar.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 /// Delivery address picker.
 ///
@@ -146,9 +145,9 @@ class _AddressTile extends StatelessWidget {
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.only(top: 2),
-                child: AppSvgViewer(
-                  Assets.icons.location,
-                  width: 20,
+                child: Icon(
+                  Symbols.location_on,
+                  size: 20,
                   color: selected ? colors.primary : colors.onSurfaceVariant,
                 ),
               ),

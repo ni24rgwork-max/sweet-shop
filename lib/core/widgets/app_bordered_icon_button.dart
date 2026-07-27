@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 
 import '../theme/theme.dart';
-import 'app_svg_viewer.dart';
 
 /// Circular outlined icon button — back arrows, bookmarks, overflow.
 class AppBorderedIconButton extends StatelessWidget {
   const AppBorderedIconButton({
-    required this.iconPath,
+    required this.icon,
     super.key,
     this.onPressed,
     this.color,
     this.size = 48,
   });
 
-  final String iconPath;
+  final IconData icon;
   final VoidCallback? onPressed;
   final Color? color;
   final double size;
@@ -32,9 +31,9 @@ class AppBorderedIconButton extends StatelessWidget {
           backgroundColor: colors.surface.withValues(alpha: 0.72),
           padding: EdgeInsets.zero,
         ),
-        icon: AppSvgViewer(
-          iconPath,
-          width: size * 0.42,
+        icon: Icon(
+          icon,
+          size: size * 0.42,
           color: color ?? colors.onSurface,
         ),
       ),

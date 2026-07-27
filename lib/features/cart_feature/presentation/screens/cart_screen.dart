@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/gen/assets.gen.dart';
 import '../../../../core/router/routes.dart';
 import '../../../../core/theme/dimens.dart';
 import '../../../../core/theme/theme.dart';
-import '../../../../core/widgets/app_svg_viewer.dart';
 import '../../../../core/widgets/general_app_bar.dart';
 import '../bloc/cart_cubit.dart';
 import '../widgets/cart_list_widget.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 /// The cart tab.
 class CartScreen extends StatelessWidget {
@@ -177,9 +176,9 @@ class _EmptyCart extends StatelessWidget {
                 shape: BoxShape.circle,
               ),
               child: Center(
-                child: AppSvgViewer(
-                  Assets.icons.shoppingCart,
-                  width: 36,
+                child: Icon(
+                  Symbols.shopping_cart,
+                  size: 36,
                   color: colors.onSurfaceVariant,
                 ),
               ),

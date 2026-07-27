@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../gen/assets.gen.dart';
 import '../theme/dimens.dart';
 import '../theme/theme.dart';
 import 'app_text_button.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 /// Section header — a Fraunces headline plus an optional "See all".
 ///
@@ -52,7 +52,7 @@ class AppTitleWidget extends StatelessWidget {
             AppTextButton(
               onPressed: onPressed,
               title: 'See all',
-              iconPath: Assets.icons.arrowRight1,
+              icon: Symbols.arrow_forward,
             ),
         ],
       ),

@@ -5,6 +5,7 @@ import '../../../../core/theme/dimens.dart';
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/general_app_bar.dart';
 import '../widgets/payment_item_widget.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 /// Payment method picker.
 ///
@@ -41,7 +42,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
             PaymentItemWidget(
               title: 'Cash',
               value: 'cash',
-              iconPath: Assets.icons.money3,
+              icon: Symbols.payments,
               selected: _method == 'cash',
               onTap: () => setState(() => _method = 'cash'),
             ),
@@ -49,7 +50,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
             PaymentItemWidget(
               title: 'Wallet',
               value: 'wallet',
-              iconPath: Assets.icons.wallet,
+              icon: Symbols.account_balance_wallet,
               selected: _method == 'wallet',
               onTap: () => setState(() => _method = 'wallet'),
             ),
@@ -59,7 +60,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
             const SizedBox(height: Dimens.mediumPadding),
             PaymentItemWidget(
               title: 'Add card',
-              iconPath: Assets.icons.card,
+              icon: Symbols.credit_card,
               showRadio: false,
               onTap: () {},
             ),

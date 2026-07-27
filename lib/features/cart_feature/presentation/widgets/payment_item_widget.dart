@@ -15,7 +15,7 @@ class PaymentItemWidget extends StatelessWidget {
     super.key,
     this.value,
     this.onTap,
-    this.iconPath,
+    this.icon,
     this.logoPath,
     this.showBorder = true,
     this.showRadio = true,
@@ -28,7 +28,7 @@ class PaymentItemWidget extends StatelessWidget {
   final String? value;
 
   final VoidCallback? onTap;
-  final String? iconPath;
+  final IconData? icon;
   final String? logoPath;
   final bool showBorder;
   final bool showRadio;
@@ -59,7 +59,7 @@ class PaymentItemWidget extends StatelessWidget {
           ),
           child: Row(
             children: <Widget>[
-              if (iconPath != null || logoPath != null) ...<Widget>[
+              if (icon != null || logoPath != null) ...<Widget>[
                 Container(
                   width: 40,
                   height: 40,
@@ -68,11 +68,11 @@ class PaymentItemWidget extends StatelessWidget {
                     borderRadius: AppShapes.radiusSm,
                   ),
                   child: Center(
-                    child: AppSvgViewer(
-                      (iconPath ?? logoPath)!,
-                      width: 20,
-                      color: iconPath != null ? colors.onSurface : null,
-                    ),
+                    // Brand marks keep their own colours; generic payment
+                    // icons take the surface foreground.
+                    child: icon != null
+                        ? Icon(icon, size: 20, color: colors.onSurface)
+                        : AppSvgViewer(logoPath!, width: 20, color: null),
                   ),
                 ),
                 const SizedBox(width: Dimens.mediumPadding),

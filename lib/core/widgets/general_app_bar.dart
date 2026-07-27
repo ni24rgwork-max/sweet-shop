@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../gen/assets.gen.dart';
 import '../theme/dimens.dart';
 import 'app_bordered_icon_button.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 /// Standard top bar for pushed screens.
 ///
@@ -41,7 +41,7 @@ class GeneralAppBar extends StatelessWidget implements PreferredSizeWidget {
               child: Padding(
                 padding: const EdgeInsets.only(left: Dimens.gutter),
                 child: AppBorderedIconButton(
-                  iconPath: Assets.icons.arrowLeft,
+                  icon: Symbols.arrow_back,
                   onPressed: () => context.pop(),
                 ),
               ),

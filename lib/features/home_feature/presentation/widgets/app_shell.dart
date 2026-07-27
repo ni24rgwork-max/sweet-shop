@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
-import '../../../../core/gen/assets.gen.dart';
 import '../../../../core/theme/dimens.dart';
 import '../../../../core/theme/theme.dart';
-import '../../../../core/widgets/app_svg_viewer.dart';
 
 /// Chrome around the five bottom-nav destinations.
 ///
@@ -17,11 +16,11 @@ class AppShell extends StatelessWidget {
   final StatefulNavigationShell shell;
 
   static const List<_Destination> _destinations = <_Destination>[
-    _Destination('Home', 'home2'),
-    _Destination('Cart', 'shoppingCart'),
-    _Destination('Orders', 'receipt'),
-    _Destination('Map', 'map1'),
-    _Destination('Profile', 'user'),
+    _Destination('Home', Symbols.home),
+    _Destination('Cart', Symbols.shopping_cart),
+    _Destination('Orders', Symbols.receipt_long),
+    _Destination('Map', Symbols.map),
+    _Destination('Profile', Symbols.person),
   ];
 
   @override
@@ -60,11 +59,11 @@ class AppShell extends StatelessWidget {
               destinations: <Widget>[
                 for (final _Destination destination in _destinations)
                   NavigationDestination(
-                    icon: _NavIcon(
+                    icon: Icon(
                       destination.icon,
                       color: colors.onSurfaceVariant,
                     ),
-                    selectedIcon: _NavIcon(
+                    selectedIcon: Icon(
                       destination.icon,
                       color: colors.onSecondaryContainer,
                     ),
@@ -83,7 +82,7 @@ class _Destination {
   const _Destination(this.label, this.icon);
 
   final String label;
-  final String icon;
+  final IconData icon;
 }
 
 /// Holds the five branch navigators and cross-fades between them.
@@ -135,28 +134,5 @@ class _KeepAlive extends StatelessWidget {
         child: Offstage(offstage: !active, child: child),
       ),
     );
-  }
-}
-
-class _NavIcon extends StatelessWidget {
-  const _NavIcon(this.name, {required this.color});
-
-  final String name;
-  final Color color;
-
-  /// The generated asset class exposes each icon as a named getter, so the name
-  /// is mapped here rather than built as a path string — that keeps the
-  /// compile-time check that the asset actually exists.
-  static final Map<String, String> _paths = <String, String>{
-    'home2': Assets.icons.home2,
-    'shoppingCart': Assets.icons.shoppingCart,
-    'receipt': Assets.icons.receipt,
-    'map1': Assets.icons.map1,
-    'user': Assets.icons.user,
-  };
-
-  @override
-  Widget build(BuildContext context) {
-    return AppSvgViewer(_paths[name]!, width: 24, height: 24, color: color);
   }
 }
