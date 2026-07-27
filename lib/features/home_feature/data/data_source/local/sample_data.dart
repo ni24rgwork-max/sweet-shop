@@ -1,12 +1,20 @@
 import '../../../../../core/gen/assets.gen.dart';
 
-List<String> banners = [
+/// Placeholder catalogue content for the local data source.
+///
+/// Stands in for a real API. Kept as parallel lists because the widgets that
+/// consume it index by position; swap this file out wholesale when a backend
+/// arrives.
+
+/// Promotional artwork for the home carousel.
+final List<String> banners = [
   Assets.images.specialOffer1.path,
   Assets.images.specialOffer2.path,
   Assets.images.specialOffer3.path,
   Assets.images.specialOffer4.path,
 ];
 
+/// Category tiles, paired positionally with [titlesOfCategories].
 final List<String> imagesOfCategories = [
   Assets.images.cupcakeIllustration.path,
   Assets.images.donutIllustration.path,
@@ -19,37 +27,38 @@ final List<String> imagesOfCategories = [
 ];
 
 final List<String> titlesOfCategories = [
-  'Cupcake',
-  'Donut',
-  'Birthday cake',
-  'Pastry',
-  'Cupcake',
-  'Donut',
-  'Birthday cake',
-  'Pastry',
+  'Cupcakes',
+  'Doughnuts',
+  'Celebration',
+  'Pastries',
+  'Brownies',
+  'Cookies',
+  'Cheesecake',
+  'Breads',
 ];
 
-List<String> titleOfTheListOfProducts = [
-  'Featured products',
-  'New products',
-  'Popular products',
+/// Section headings on the home screen.
+final List<String> titleOfTheListOfProducts = [
+  'Fresh from the oven',
+  'New this week',
+  'Most loved',
 ];
 
-List<String> productsName = [
-  'Red Velvet Cake',
-  'Chocolate Cake',
-  'Red Velvet Cake',
-  'Chocolate Cake',
+final List<String> productsName = [
+  'Velvet Celebration Cake',
+  'Dark Chocolate Torte',
+  'Berry Cream Layer Cake',
+  'Salted Caramel Gateau',
 ];
 
-List<String> productsImage = [
+final List<String> productsImage = [
   Assets.images.redVelvetCakeWithFruit.path,
   Assets.images.strawberryChocolateCake.path,
   Assets.images.redVelvetCakeWithFruit.path,
   Assets.images.strawberryChocolateCake.path,
 ];
 
-List<String> categoryProductsImage = [
+final List<String> categoryProductsImage = [
   Assets.images.donutCategory1.path,
   Assets.images.donutCategory2.path,
   Assets.images.donutCategory3.path,
@@ -61,20 +70,24 @@ List<String> categoryProductsImage = [
   Assets.images.birthdayCakeCategory3.path,
 ];
 
-List<String> categoryProductsName = [
-  'Sponge donut',
-  'Chocolate donut',
-  'Donuts',
-  'Strawberry cake',
-  'blackberry cake',
-  'Chocolate cake',
-  'Birthday cake',
-  'Birthday cake',
-  'Birthday cake',
+final List<String> categoryProductsName = [
+  'Glazed Ring Doughnut',
+  'Cocoa Dusted Doughnut',
+  'Doughnut Selection Box',
+  'Strawberries & Cream Cake',
+  'Blackberry Sponge',
+  'Triple Chocolate Cake',
+  'Confetti Celebration Cake',
+  'Golden Buttercream Cake',
+  'Candlelit Party Cake',
 ];
 
-final String productDescription =
-    'Our chocolate cake is made with a combination of the finest ingredients, from premium chocolate and cocoa to the freshest eggs and pure butter. With a soft, moist texture and rich chocolate flavor, this cake will give you an unforgettable experience.\nEach slice is a celebration of pure indulgence, crafted to delight your senses.\nDiscover the difference that quality and care make in every single bite.';
+const String productDescription =
+    'Baked each morning in small batches, then finished by hand once it has '
+    'cooled. We use stoneground flour, unsalted butter and free-range eggs, '
+    'with nothing added to make it keep longer than it should.\n'
+    'The crumb stays soft for two days at room temperature — though in our '
+    'experience it rarely lasts that long.\n'
+    'Available in five sizes, with custom lettering on request.';
 
-final List<String> weights = ['0.5 kg', '1 kg', '1.5 kg', '2 kg', '4 kg'];
-
+const List<String> weights = ['0.5 kg', '1 kg', '1.5 kg', '2 kg', '4 kg'];

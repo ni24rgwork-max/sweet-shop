@@ -29,7 +29,6 @@ class CartScreen extends StatelessWidget {
             CartLoaded(items: final items) when items.isEmpty =>
               const _EmptyCart(),
             CartLoaded() => _LoadedCart(state: state),
-            _ => const SizedBox.shrink(),
           };
         },
       ),
